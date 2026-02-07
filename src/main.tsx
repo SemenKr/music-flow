@@ -6,5 +6,5 @@ import App from './app/ui/App.tsx'
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter >
     <App />
-  </BrowserRouter >,
+  </BrowserRouter >
 )

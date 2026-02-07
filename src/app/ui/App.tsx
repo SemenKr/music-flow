@@ -1,9 +1,10 @@
+import {Routing} from '@/common/routing/Routing';
 
 function App() {
 
   return (
     <>
-      <h1>APP</h1>
+      <Routing />
     </>
   )
 }
