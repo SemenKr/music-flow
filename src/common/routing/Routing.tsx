@@ -1,5 +1,5 @@
 import {MainPage} from '@/app/ui/MainPage';
-import {PageNotFound} from '@/common/components/PageNotFound';
+import {PageNotFound} from '@/common/components';
 import {ProfilePage} from '@/features/auth/ui/ProfilePage';
 import {PlaylistsPage} from '@/features/playlists/ui';
 import {TracksPage} from '@/features/tracks/ui';
