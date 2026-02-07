@@ -1,2 +1,2 @@
-export * from './Header'
-export * from './PageNotFound'
+export {Header} from './Header'
+export {PageNotFound} from './PageNotFound'
