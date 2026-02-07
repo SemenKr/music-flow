@@ -4,14 +4,7 @@ import {ProfilePage} from '@/features/auth/ui/ProfilePage';
 import {PlaylistsPage} from '@/features/playlists/ui';
 import {TracksPage} from '@/features/tracks/ui';
 import {Route, Routes} from 'react-router';
-
-export const Path = {
-    Main: '/',
-    Playlists: '/playlists',
-    Tracks: '/tracks',
-    Profile: '/profile',
-    NotFound: '*',
-} as const
+import {Path} from './path';
 
 export const Routing = () => (
     <Routes>

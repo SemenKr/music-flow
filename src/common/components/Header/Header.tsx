@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router'
-import { Path } from '@/common/routing/Routing'
+import {Path} from '@/common/routing'
 import s from './Header.module.css'
 
 const navItems = [
