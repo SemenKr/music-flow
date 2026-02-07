@@ -1,8 +1,8 @@
-import {MainPage} from '@/app/ui/MainPage/MainPage';
+import {MainPage} from '@/app/ui/MainPage';
 import {PageNotFound} from '@/common/components/PageNotFound';
-import {ProfilePage} from '@/features/auth/ui/ProfilePage/ProfilePage';
-import {PlaylistsPage} from '@/features/playlists/ui/PlaylistsPage';
-import {TracksPage} from '@/features/tracks/ui/TracksPage';
+import {ProfilePage} from '@/features/auth/ui/ProfilePage';
+import {PlaylistsPage} from '@/features/playlists/ui';
+import {TracksPage} from '@/features/tracks/ui';
 import {Route, Routes} from 'react-router';
 
 export const Path = {

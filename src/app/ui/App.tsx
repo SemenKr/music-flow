@@ -1,4 +1,4 @@
-import {Header} from '@/common/components/Header/Header';
+import {Header} from '@/common/components/Header';
 import {Routing} from '@/common/routing';
 
 function App() {
