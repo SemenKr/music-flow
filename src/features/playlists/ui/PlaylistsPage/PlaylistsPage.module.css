@@ -1,54 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Space+Grotesk:wght@400;500;600&display=swap');
-
 .page {
-    --page-bg: #0f1420;
-    --page-fg: #f7f4ef;
-    --page-muted: #c8c1b8;
-    --accent: #ffb74d;
-    --accent-2: #6ad7c1;
-    --card-bg: rgba(20, 26, 40, 0.7);
-    --card-border: rgba(255, 255, 255, 0.08);
-    --shadow: 0 22px 50px rgba(5, 8, 20, 0.3);
-    --shadow-hover: 0 24px 55px rgba(6, 10, 22, 0.38);
-    --shadow-soft: 0 12px 28px rgba(8, 12, 22, 0.28);
-
     position: relative;
     min-height: calc(100vh - 120px);
     padding: 40px 24px 64px;
     color: var(--page-fg);
     font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
     line-height: 1.6;
-    background: radial-gradient(circle at 10% 10%, rgba(255, 183, 77, 0.15), transparent 45%),
-        radial-gradient(circle at 90% 0%, rgba(106, 215, 193, 0.18), transparent 40%),
-        linear-gradient(135deg, #0c0f18 0%, #121a2b 45%, #101624 100%);
+    background: transparent;
     overflow: hidden;
 }
 
 .page::before,
 .page::after {
-    content: '';
-    position: absolute;
-    width: 420px;
-    height: 420px;
-    border-radius: 999px;
-    filter: blur(80px);
-    opacity: 0.45;
-    z-index: 0;
-    animation: drift 18s ease-in-out infinite;
+    content: none;
 }
 
-.page::before {
-    top: -140px;
-    right: -120px;
-    background: radial-gradient(circle, rgba(255, 183, 77, 0.6), transparent 70%);
-}
-
-.page::after {
-    bottom: -160px;
-    left: -120px;
-    background: radial-gradient(circle, rgba(106, 215, 193, 0.5), transparent 70%);
-    animation-delay: -6s;
-}
 
 .hero {
     position: relative;
@@ -90,7 +55,7 @@
     padding: 16px 20px;
     border-radius: 16px;
     border: 1px solid var(--card-border);
-    background: rgba(12, 16, 28, 0.6);
+    background: var(--card-bg);
     box-shadow: var(--shadow);
     min-width: 160px;
     text-align: center;
