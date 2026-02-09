@@ -24,21 +24,17 @@ export const playlistsApi = createApi({
         // Типизация аргументов (<возвращаемый тип, тип query аргументов (`QueryArg`)>)
         // `query` по умолчанию создает запрос `get` и указание метода необязательно
         fetchPlaylists: build.query<PlaylistsResponse, FetchPlaylistsArgs>({
-            query: () => {
-                return {
-                    method: 'get',
-                    url: `playlists`,
-                }
-            }
+            query: () => ({
+                method: 'get',
+                url: `playlists`,
+            })
         }),
         createPlaylist: build.mutation<{ data: PlaylistData }, CreatePlaylistArgs>({
-            query: (body) => {
-                return {
-                    method: 'post',
-                    url: `playlists`,
-                    body
-                }
-            }
+            query: (body) => ({
+                method: 'post',
+                url: `playlists`,
+                body
+            })
         })
     })
 })
