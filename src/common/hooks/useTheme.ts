@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState, useSyncExternalStore} from 'react';
 
 type Theme = 'light' | 'dark';
 type ThemePreference = Theme | 'system';
@@ -28,32 +28,20 @@ const getStoredPreference = (): ThemePreference => {
 
 export const useTheme = () => {
     const [preference, setPreference] = useState<ThemePreference>(() => getStoredPreference());
-    const [resolvedTheme, setResolvedTheme] = useState<Theme>(() => {
-        const stored = getStoredPreference();
-        return stored === 'system' ? getSystemTheme() : stored;
-    });
+    const systemTheme = useSyncExternalStore(
+        (callback) => {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            media.addEventListener('change', callback);
+            return () => media.removeEventListener('change', callback);
+        },
+        getSystemTheme,
+        () => 'dark'
+    );
+    const resolvedTheme = preference === 'system' ? systemTheme : preference;
 
     useEffect(() => {
-        const theme = preference === 'system' ? getSystemTheme() : preference;
-        setResolvedTheme(theme);
-        document.documentElement.setAttribute('data-theme', theme);
-    }, [preference]);
-
-    useEffect(() => {
-        if (preference !== 'system') {
-            return;
-        }
-
-        const media = window.matchMedia('(prefers-color-scheme: dark)');
-        const handleChange = () => {
-            const theme = media.matches ? 'dark' : 'light';
-            setResolvedTheme(theme);
-            document.documentElement.setAttribute('data-theme', theme);
-        };
-
-        media.addEventListener('change', handleChange);
-        return () => media.removeEventListener('change', handleChange);
-    }, [preference]);
+        document.documentElement.setAttribute('data-theme', resolvedTheme);
+    }, [resolvedTheme]);
 
     const setThemePreference = useCallback((next: ThemePreference) => {
         setPreference(next);
