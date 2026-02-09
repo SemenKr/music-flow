@@ -15,7 +15,11 @@ export const playlistsApi = createApi({
         baseUrl:  import.meta.env.VITE_BASE_URL,
         headers:  {
             'API-KEY': import.meta.env.VITE_API_KEY,
-        }
+        },
+        prepareHeaders: headers => {
+            headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
+            return headers
+        },
     }),
     // `endpoints` - метод, возвращающий объект с эндпоинтами для `API`, описанными
     // с помощью функций, которые будут вызываться при вызове соответствующих методов `API`
