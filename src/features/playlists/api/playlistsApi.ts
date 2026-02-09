@@ -1,5 +1,10 @@
 // Во избежание ошибок импорт должен быть из `@reduxjs/toolkit/query/react`
-import type {FetchPlaylistsArgs, PlaylistsResponse} from '@/features/playlists/api/playlistsApi.types';
+import type {
+    CreatePlaylistArgs,
+    FetchPlaylistsArgs,
+    PlaylistData,
+    PlaylistsResponse
+} from '@/features/playlists/api/playlistsApi.types';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 // `createApi` - функция из `RTK Query`, позволяющая создать объект `API`
 // для взаимодействия с внешними `API` и управления состоянием приложения
@@ -25,9 +30,18 @@ export const playlistsApi = createApi({
                     url: `playlists`,
                 }
             }
+        }),
+        createPlaylist: build.mutation<{ data: PlaylistData }, CreatePlaylistArgs>({
+            query: (body) => {
+                return {
+                    method: 'post',
+                    url: `playlists`,
+                    body
+                }
+            }
         })
     })
 })
 // `createApi` создает объект `API`, который содержит все эндпоинты в виде хуков,
 // определенные в свойстве `endpoints`
-export const { useFetchPlaylistsQuery } = playlistsApi
+export const { useFetchPlaylistsQuery, useCreatePlaylistMutation } = playlistsApi
