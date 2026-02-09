@@ -177,10 +177,13 @@
     aspect-ratio: 1 / 1;
     border-radius: 14px;
     background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     background: linear-gradient(135deg, rgba(255, 183, 77, 0.3), rgba(106, 215, 193, 0.25)) center;
     display: grid;
     place-items: center;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
     transition: transform 200ms ease, box-shadow 200ms ease;
     will-change: transform;
 }
