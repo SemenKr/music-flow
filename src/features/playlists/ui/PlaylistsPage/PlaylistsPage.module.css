@@ -133,6 +133,15 @@
     gap: 22px;
 }
 
+.formCard {
+    display: flex;
+    min-width: 0;
+}
+
+.formCard > * {
+    width: 100%;
+}
+
 .card {
     display: grid;
     gap: 14px;

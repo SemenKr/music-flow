@@ -1,4 +1,5 @@
 import {useFetchPlaylistsQuery} from '@/features/playlists/api/playlistsApi';
+import {CreatePlaylistForm} from '@/features/playlists/ui/PlaylistsPage/CreatePlaylistForm/CreatePlaylistForm';
 import s from './PlaylistsPage.module.css'
 
 export const PlaylistsPage = () => {
@@ -24,6 +25,9 @@ export const PlaylistsPage = () => {
 
             {!isLoading && !error && (
                 <div className={s.grid}>
+                    <div className={s.formCard}>
+                        <CreatePlaylistForm />
+                    </div>
                     {data?.data.map((playlist, index) => {
                         const cover = playlist.attributes.images?.main?.[0]?.url
                         const title = playlist.attributes.title
