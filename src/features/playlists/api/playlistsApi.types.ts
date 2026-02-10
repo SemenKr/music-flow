@@ -28,6 +28,7 @@ export type PlaylistAttributes = {
     order: number
     dislikesCount: number
     likesCount: number
+    tracksCount: number
     tags: Tag[]
     images: Images
     user: User
@@ -47,6 +48,15 @@ export type FetchPlaylistsArgs = {
 }
 
 export type CreatePlaylistArgs = {
+    data: {
+        type: 'playlists'
+        attributes: {
+            title: string
+            description: string
+        }
+    }
+}
+export type CreatePlaylistFormValues = {
     title: string
     description: string
 }
