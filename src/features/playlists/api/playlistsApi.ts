@@ -3,7 +3,7 @@ import type {
     CreatePlaylistArgs,
     FetchPlaylistsArgs,
     PlaylistData,
-    PlaylistsResponse
+    PlaylistsResponse, UpdatePlaylistArgs
 } from '@/features/playlists/api/playlistsApi.types';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 // `createApi` - функция из `RTK Query`, позволяющая создать объект `API`
@@ -39,9 +39,22 @@ export const playlistsApi = createApi({
                 url: `playlists`,
                 body
             })
+        }),
+        deletePlaylist: build.mutation<void, string>({
+            query: (playlistId) => ({
+                method: 'delete',
+                url: `playlists/${playlistId}`,
+            })
+        }),
+        updatePlaylist: build.mutation<void, { playlistId: string; body: UpdatePlaylistArgs }>({
+            query: ({ playlistId, body }) => ({
+                method: 'put',
+                url: `playlists/${playlistId}`,
+                body
+            })
         })
     })
 })
 // `createApi` создает объект `API`, который содержит все эндпоинты в виде хуков,
 // определенные в свойстве `endpoints`
-export const { useFetchPlaylistsQuery, useCreatePlaylistMutation } = playlistsApi
+export const { useFetchPlaylistsQuery, useCreatePlaylistMutation, useDeletePlaylistMutation, useUpdatePlaylistMutation } = playlistsApi
