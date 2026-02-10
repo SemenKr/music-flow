@@ -22,7 +22,7 @@ export type PlaylistMeta = {
 
 export type PlaylistAttributes = {
     title: string
-    description: string
+    description?: string
     addedAt: string
     updatedAt: string
     order: number
