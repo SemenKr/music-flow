@@ -175,6 +175,81 @@
     gap: 6px;
 }
 
+.editForm {
+    display: grid;
+    gap: 10px;
+}
+
+.editInput {
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    background: rgba(14, 18, 30, 0.55);
+    color: var(--page-fg);
+    padding: 0 12px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.editInput::placeholder {
+    color: rgba(200, 193, 184, 0.6);
+}
+
+.editInput:focus {
+    border-color: rgba(255, 183, 77, 0.6);
+    box-shadow: 0 0 0 3px rgba(255, 183, 77, 0.12);
+}
+
+.cardActions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    margin-top: 8px;
+}
+
+.updateButton,
+.deleteButton {
+    border: 1px solid rgba(255, 131, 131, 0.45);
+    background: rgba(255, 79, 79, 0.16);
+    color: #ffd5d5;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.updateButton {
+    border-color: rgba(120, 205, 255, 0.5);
+    background: rgba(65, 155, 255, 0.18);
+    color: #d6efff;
+}
+
+.updateButton:hover {
+    transform: translateY(-1px);
+    border-color: rgba(120, 205, 255, 0.8);
+    box-shadow: 0 12px 25px rgba(65, 155, 255, 0.2);
+}
+
+.updateButton:focus-visible {
+    outline: 2px solid rgba(120, 205, 255, 0.8);
+    outline-offset: 2px;
+}
+
+.deleteButton:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 131, 131, 0.8);
+    box-shadow: 0 12px 25px rgba(255, 79, 79, 0.2);
+}
+
+.deleteButton:focus-visible {
+    outline: 2px solid rgba(255, 131, 131, 0.8);
+    outline-offset: 2px;
+}
+
 .cardTitle {
     font-size: 18px;
     margin: 0;

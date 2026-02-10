@@ -1,9 +1,68 @@
-import {useFetchPlaylistsQuery} from '@/features/playlists/api/playlistsApi';
+import {
+    useDeletePlaylistMutation,
+    useFetchPlaylistsQuery,
+    useUpdatePlaylistMutation
+} from '@/features/playlists/api/playlistsApi';
+import type {PlaylistData} from '@/features/playlists/api/playlistsApi.types';
 import {CreatePlaylistForm} from '@/features/playlists/ui/PlaylistsPage/CreatePlaylistForm/CreatePlaylistForm';
+import {useState} from 'react';
+import {type SubmitHandler, useForm} from 'react-hook-form';
 import s from './PlaylistsPage.module.css'
 
+type UpdatePlaylistFormValues = {
+    title: string
+    description: string
+}
+
 export const PlaylistsPage = () => {
+    const [playlistId, setPlaylistId] = useState<string | null>(null)
+    const [editingTagIds, setEditingTagIds] = useState<string[]>([])
+    const { register, handleSubmit, reset } = useForm<UpdatePlaylistFormValues>()
+
     const {data, error, isLoading} = useFetchPlaylistsQuery({})
+    const [deletePlaylist] = useDeletePlaylistMutation()
+    const [updatePlaylist] = useUpdatePlaylistMutation()
+    const deletePlaylistHandler = (playlistId: string) => {
+        if (confirm('Are you sure you want to delete the playlist?')) {
+            deletePlaylist(playlistId)
+        }
+    }
+    const editPlaylistHandler = (playlist: PlaylistData | null) => {
+        if (playlist) {
+            setPlaylistId(playlist.id)
+            setEditingTagIds(playlist.attributes.tags.map(tag => tag.id))
+            reset({
+                title: playlist.attributes.title,
+                description: playlist.attributes.description,
+            })
+        } else {
+            setPlaylistId(null)
+            setEditingTagIds([])
+            reset({ title: '', description: '' })
+        }
+    }
+    const onSubmit: SubmitHandler<UpdatePlaylistFormValues> = data => {
+        if (!playlistId) return
+        updatePlaylist({
+            playlistId,
+            body: {
+                data: {
+                    type: 'playlists',
+                    attributes: {
+                        title: data.title,
+                        description: data.description,
+                        tagIds: editingTagIds,
+                    }
+                }
+            }
+        }).then(() => {
+            setPlaylistId(null)
+            setEditingTagIds([])
+        })
+    }
+
+
+
     return (
         <section className={s.page}>
             <header className={s.hero}>
@@ -26,12 +85,13 @@ export const PlaylistsPage = () => {
             {!isLoading && !error && (
                 <div className={s.grid}>
                     <div className={s.formCard}>
-                        <CreatePlaylistForm />
+                        <CreatePlaylistForm/>
                     </div>
                     {data?.data.map((playlist, index) => {
                         const cover = playlist.attributes.images?.main?.[0]?.url
                         const title = playlist.attributes.title
                         const initial = title?.[0]?.toUpperCase() ?? '?'
+                        const isEditing = playlistId === playlist.id
                         return (
                             <article
                                 className={s.card}
@@ -45,11 +105,56 @@ export const PlaylistsPage = () => {
                                     {!cover && <span className={s.coverFallback}>{initial}</span>}
                                 </div>
                                 <div className={s.cardBody}>
-                                    <h2 className={s.cardTitle}>{title}</h2>
-                                    <p className={s.cardMeta}>by {playlist.attributes.user.name}</p>
-                                    <p className={s.cardDesc}>
-                                        {playlist.attributes.description || 'No description yet.'}
-                                    </p>
+                                    {isEditing ? (
+                                        <form className={s.editForm} onSubmit={handleSubmit(onSubmit)}>
+                                            <h2 className={s.cardTitle}>Edit playlist</h2>
+                                            <input
+                                                className={s.editInput}
+                                                {...register('title')}
+                                                placeholder="Title"
+                                            />
+                                            <input
+                                                className={s.editInput}
+                                                {...register('description')}
+                                                placeholder="Description"
+                                            />
+                                            <div className={s.cardActions}>
+                                                <button className={s.updateButton} type="submit">
+                                                    Save
+                                                </button>
+                                                <button
+                                                    className={s.deleteButton}
+                                                    type="button"
+                                                    onClick={() => editPlaylistHandler(null)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </form>
+                                    ) : (
+                                        <>
+                                            <h2 className={s.cardTitle}>{title}</h2>
+                                            <p className={s.cardMeta}>
+                                                by {playlist.attributes.user.name} • {playlist.attributes.tracksCount} tracks
+                                            </p>
+                                            <div className={s.cardActions}>
+                                                <button
+                                                    className={s.updateButton}
+                                                    type="button"
+                                                    onClick={() => editPlaylistHandler(playlist)}
+                                                >
+                                                    Update
+                                                </button>
+                                                <button
+                                                    className={s.deleteButton}
+                                                    type="button"
+                                                    onClick={() => deletePlaylistHandler(playlist.id)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </article>
                         )

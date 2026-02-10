@@ -4,16 +4,23 @@ import {type SubmitHandler, useForm} from 'react-hook-form';
 import s from './CreatePlaylistForm.module.css';
 
 export const CreatePlaylistForm = () => {
-    const { register, handleSubmit } = useForm<CreatePlaylistFormValues>()
+    const {register, handleSubmit, reset} = useForm<CreatePlaylistFormValues>()
     const [createPlaylist] = useCreatePlaylistMutation()
 
-    const onSubmit: SubmitHandler<{ title: string; description: string }> = data => {
+    const onSubmit: SubmitHandler<{
+        title: string;
+        description: string
+    }> = data => {
         createPlaylist({
             data: {
                 type: 'playlists',
                 attributes: data
             }
-        })
+        }).unwrap()
+            .then(() => {
+                reset()
+            })
+
     }
 
     return (
