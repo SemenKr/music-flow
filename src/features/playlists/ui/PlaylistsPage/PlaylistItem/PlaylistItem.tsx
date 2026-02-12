@@ -1,11 +1,6 @@
-import type {PlaylistData, UpdatePlaylistMutationArgs} from '@/features/playlists/api/playlistsApi.types'
-import {type SubmitHandler, useForm} from 'react-hook-form'
+import type { PlaylistData, UpdatePlaylistMutationArgs } from '@/features/playlists/api/playlistsApi.types'
+import {EditPlaylistForm} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/EditPlaylistForm/EditPlaylistForm';
 import s from '../PlaylistsPage.module.css'
-
-type UpdatePlaylistFormValues = {
-    title: string
-    description: string
-}
 
 type Props = {
     playlist: PlaylistData
@@ -24,30 +19,6 @@ export const PlaylistItem = ({
                                  onDelete,
                                  onUpdate
                              }: Props) => {
-    const { register, handleSubmit, reset } =
-        useForm<UpdatePlaylistFormValues>({
-            defaultValues: {
-                title: playlist.attributes.title,
-                description: playlist.attributes.description ?? ''
-            }
-        })
-
-    const onSubmit: SubmitHandler<UpdatePlaylistFormValues> = data => {
-        onUpdate({
-            playlistId: playlist.id,
-            body: {
-                data: {
-                    type: 'playlists',
-                    attributes: {
-                        title: data.title,
-                        description: data.description,
-                        tagIds: playlist.attributes.tags.map(t => t.id)
-                    }
-                }
-            }
-        }).then(onCancelEdit)
-    }
-
     const cover = playlist.attributes.images?.main?.[0]?.url
     const title = playlist.attributes.title
     const initial = title[0]?.toUpperCase() ?? '?'
@@ -63,20 +34,11 @@ export const PlaylistItem = ({
 
             <div className={s.cardBody}>
                 {isEditing ? (
-                    <form
-                        className={s.editForm}
-                        onSubmit={handleSubmit(onSubmit)}
-                    >
-                        <input {...register('title')} />
-                        <input {...register('description')} />
-
-                        <div className={s.actions}>
-                            <button type="submit">Save</button>
-                            <button type="button" onClick={onCancelEdit}>
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
+                    <EditPlaylistForm
+                        playlist={playlist}
+                        onCancel={onCancelEdit}
+                        onUpdate={onUpdate}
+                    />
                 ) : (
                     <>
                         <h2>{title}</h2>
@@ -86,12 +48,7 @@ export const PlaylistItem = ({
                         </p>
 
                         <div className={s.actions}>
-                            <button onClick={() => {
-                                reset()
-                                onEdit()
-                            }}>
-                                Update
-                            </button>
+                            <button onClick={onEdit}>Update</button>
                             <button onClick={() => onDelete(playlist.id)}>Delete</button>
                         </div>
                     </>
