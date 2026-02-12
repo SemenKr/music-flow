@@ -6,55 +6,88 @@ import type {
     UpdatePlaylistArgs
 } from '@/features/playlists/api/playlistsApi.types';
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+
+// 🎵 API для работы с плейлистами
 // `createApi` - функция из `RTK Query`, позволяющая создать объект `API`
 // для взаимодействия с внешними `API` и управления состоянием приложения
 export const playlistsApi = createApi({
-    // `reducerPath` - имя куда будут сохранены состояние и экшены для этого `API`
+    // 📁 Имя редьюсера - куда будут сохранены состояние и экшены для этого API
     reducerPath: 'playlistsApi',
+
+    // 🏷️ Теги для автоматической инвалидации кэша
+    // Когда данные изменяются (создание/обновление/удаление),
+    // RTK Query автоматически обновит список плейлистов
+    tagTypes: ["Playlists"],
+
+    // 🌐 Базовая конфигурация для всех запросов
     baseQuery: fetchBaseQuery({
-        baseUrl:  import.meta.env.VITE_BASE_URL,
-        headers:  {
+        baseUrl: import.meta.env.VITE_BASE_URL,
+        headers: {
             'API-KEY': import.meta.env.VITE_API_KEY,
         },
+        // 🔐 Добавляем токен авторизации к каждому запросу
         prepareHeaders: headers => {
             headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
             return headers
         },
     }),
-    // `endpoints` - метод, возвращающий объект с эндпоинтами для `API`, описанными
-    // с помощью функций, которые будут вызываться при вызове соответствующих методов `API`
-    // (например `get`, `post`, `put`, `patch`, `delete`)
+
+    // 🎯 Эндпоинты - описание всех методов работы с API
     endpoints: build => ({
-        // Типизация аргументов (<возвращаемый тип, тип query аргументов (`QueryArg`)>)
-        // `query` по умолчанию создает запрос `get` и указание метода необязательно
+        // 📋 Получение списка всех плейлистов
+        // Типизация: <возвращаемый тип, тип аргументов запроса>
         fetchPlaylists: build.query<PlaylistsResponse, void>({
             query: () => ({
                 method: 'get',
                 url: `playlists`,
-            })
+            }),
+            // ✅ Помечаем, что этот запрос предоставляет данные с тегом "Playlists"
+            providesTags: ["Playlists"]
         }),
+
+        // ➕ Создание нового плейлиста
         createPlaylist: build.mutation<{ data: PlaylistData }, CreatePlaylistArgs>({
             query: (body) => ({
                 method: 'post',
                 url: `playlists`,
                 body
-            })
+            }),
+            // 🔄 После создания инвалидируем кэш, чтобы обновить список плейлистов
+            invalidatesTags: ["Playlists"]
         }),
+
+        // 🗑️ Удаление плейлиста по ID
         deletePlaylist: build.mutation<void, string>({
             query: (playlistId) => ({
                 method: 'delete',
                 url: `playlists/${playlistId}`,
-            })
+            }),
+            // 🔄 После удаления обновляем список
+            invalidatesTags: ["Playlists"]
         }),
+
+        // ✏️ Обновление существующего плейлиста
         updatePlaylist: build.mutation<void, { playlistId: string; body: UpdatePlaylistArgs }>({
             query: ({ playlistId, body }) => ({
                 method: 'put',
                 url: `playlists/${playlistId}`,
                 body
-            })
+            }),
+            // 🔄 После обновления перезагружаем список плейлистов
+            invalidatesTags: ["Playlists"]
         })
     })
 })
-// `createApi` создает объект `API`, который содержит все эндпоинты в виде хуков,
-// определенные в свойстве `endpoints`
-export const { useFetchPlaylistsQuery, useCreatePlaylistMutation, useDeletePlaylistMutation, useUpdatePlaylistMutation } = playlistsApi
+
+// 🪝 Экспортируем автоматически созданные хуки для использования в компонентах
+// RTK Query автоматически создаёт хуки на основе имён эндпоинтов:
+// - fetchPlaylists → useFetchPlaylistsQuery
+// - createPlaylist → useCreatePlaylistMutation
+// - deletePlaylist → useDeletePlaylistMutation
+// - updatePlaylist → useUpdatePlaylistMutation
+export const {
+    useFetchPlaylistsQuery,
+    useCreatePlaylistMutation,
+    useDeletePlaylistMutation,
+    useUpdatePlaylistMutation
+} = playlistsApi
