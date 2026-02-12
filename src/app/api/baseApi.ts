@@ -1,0 +1,25 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+
+export const baseApi = createApi({
+    // 📁 Имя редьюсера - куда будут сохранены состояние и экшены для этого API
+    reducerPath: 'playlistsApi',
+
+    // 🏷️ Теги для автоматической инвалидации кэша
+    // Когда данные изменяются (создание/обновление/удаление),
+    // RTK Query автоматически обновит список плейлистов
+    tagTypes: ["Playlists"],
+
+    // 🌐 Базовая конфигурация для всех запросов
+    baseQuery: fetchBaseQuery({
+        baseUrl: import.meta.env.VITE_BASE_URL,
+        headers: {
+            'API-KEY': import.meta.env.VITE_API_KEY,
+        },
+        // 🔐 Добавляем токен авторизации к каждому запросу
+        prepareHeaders: headers => {
+            headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
+            return headers
+        },
+    }),
+    endpoints: () => ({}),
+})

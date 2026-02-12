@@ -1,37 +1,16 @@
 // Во избежание ошибок импорт должен быть из `@reduxjs/toolkit/query/react`
+import {baseApi} from '@/app/api/baseApi';
 import type {
     CreatePlaylistArgs,
     PlaylistData,
     PlaylistsResponse,
     UpdatePlaylistArgs
 } from '@/features/playlists/api/playlistsApi.types';
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 
 // 🎵 API для работы с плейлистами
 // `createApi` - функция из `RTK Query`, позволяющая создать объект `API`
 // для взаимодействия с внешними `API` и управления состоянием приложения
-export const playlistsApi = createApi({
-    // 📁 Имя редьюсера - куда будут сохранены состояние и экшены для этого API
-    reducerPath: 'playlistsApi',
-
-    // 🏷️ Теги для автоматической инвалидации кэша
-    // Когда данные изменяются (создание/обновление/удаление),
-    // RTK Query автоматически обновит список плейлистов
-    tagTypes: ["Playlists"],
-
-    // 🌐 Базовая конфигурация для всех запросов
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_BASE_URL,
-        headers: {
-            'API-KEY': import.meta.env.VITE_API_KEY,
-        },
-        // 🔐 Добавляем токен авторизации к каждому запросу
-        prepareHeaders: headers => {
-            headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
-            return headers
-        },
-    }),
-
+export const playlistsApi = baseApi.injectEndpoints({
     // 🎯 Эндпоинты - описание всех методов работы с API
     endpoints: build => ({
         // 📋 Получение списка всех плейлистов
