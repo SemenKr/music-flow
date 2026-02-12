@@ -9,7 +9,7 @@ import { useState } from 'react'
 import s from './PlaylistsPage.module.css'
 
 export const PlaylistsPage = () => {
-    const { data, error, isLoading } = useFetchPlaylistsQuery({})
+    const { data, error, isLoading } = useFetchPlaylistsQuery()
     const [deletePlaylist] = useDeletePlaylistMutation()
     const [updatePlaylist] = useUpdatePlaylistMutation()
 

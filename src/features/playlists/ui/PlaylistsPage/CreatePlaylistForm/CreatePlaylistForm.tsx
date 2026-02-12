@@ -5,22 +5,23 @@ import s from './CreatePlaylistForm.module.css';
 
 export const CreatePlaylistForm = () => {
     const {register, handleSubmit, reset} = useForm<CreatePlaylistFormValues>()
-    const [createPlaylist] = useCreatePlaylistMutation()
+    const [createPlaylist, { isLoading }] = useCreatePlaylistMutation()
 
-    const onSubmit: SubmitHandler<{
-        title: string;
-        description: string
-    }> = data => {
+    const onSubmit: SubmitHandler<CreatePlaylistFormValues> = data => {
         createPlaylist({
             data: {
                 type: 'playlists',
                 attributes: data
             }
-        }).unwrap()
+        })
+            .unwrap()
             .then(() => {
                 reset()
             })
-
+            .catch((error) => {
+                console.error('Failed to create playlist:', error)
+                // Можно показать toast с ошибкой
+            })
     }
 
     return (
@@ -48,7 +49,7 @@ export const CreatePlaylistForm = () => {
                     placeholder="Warm synths and slow beats."
                 />
             </div>
-            <button className={s.submit} type="submit">Create playlist</button>
+            <button disabled={isLoading} className={s.submit} type="submit">Create playlist</button>
         </form>
     )
 }

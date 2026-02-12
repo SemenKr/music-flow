@@ -1,5 +1,5 @@
-import type { PlaylistData } from '@/features/playlists/api/playlistsApi.types'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import type {PlaylistData, UpdatePlaylistMutationArgs} from '@/features/playlists/api/playlistsApi.types'
+import {type SubmitHandler, useForm} from 'react-hook-form'
 import s from '../PlaylistsPage.module.css'
 
 type UpdatePlaylistFormValues = {
@@ -12,20 +12,8 @@ type Props = {
     isEditing: boolean
     onEdit: () => void
     onCancelEdit: () => void
-    onDelete: () => void
-    onUpdate: (args: {
-        playlistId: string
-        body: {
-            data: {
-                type: 'playlists'
-                attributes: {
-                    title: string
-                    description: string
-                    tagIds: string[]
-                }
-            }
-        }
-    }) => Promise<any>
+    onDelete: (playlistId: string) => void
+    onUpdate: (args: UpdatePlaylistMutationArgs) => Promise<unknown>
 }
 
 export const PlaylistItem = ({
@@ -104,7 +92,7 @@ export const PlaylistItem = ({
                             }}>
                                 Update
                             </button>
-                            <button onClick={onDelete}>Delete</button>
+                            <button onClick={() => onDelete(playlist.id)}>Delete</button>
                         </div>
                     </>
                 )}

@@ -22,7 +22,7 @@ export type PlaylistMeta = {
 
 export type PlaylistAttributes = {
     title: string
-    description?: string
+    description: string
     addedAt: string
     updatedAt: string
     order: number
@@ -71,4 +71,9 @@ export type UpdatePlaylistArgs = {
 export type CreatePlaylistFormValues = {
     title: string
     description: string
+}
+// ✅ Добавляем тип для аргументов мутации
+export type UpdatePlaylistMutationArgs = {
+    playlistId: string
+    body: UpdatePlaylistArgs
 }
