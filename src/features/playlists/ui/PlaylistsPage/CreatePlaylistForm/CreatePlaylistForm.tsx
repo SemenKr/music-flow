@@ -5,7 +5,7 @@ import s from './CreatePlaylistForm.module.css';
 
 export const CreatePlaylistForm = () => {
     const {register, handleSubmit, reset} = useForm<CreatePlaylistFormValues>()
-    const [createPlaylist, { isLoading }] = useCreatePlaylistMutation()
+    const [createPlaylist, {isLoading}] = useCreatePlaylistMutation()
 
     const onSubmit: SubmitHandler<CreatePlaylistFormValues> = data => {
         createPlaylist({

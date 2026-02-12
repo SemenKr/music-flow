@@ -1,0 +1,13 @@
+.editForm {
+
+}
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+.actions {
+    display: flex;
+    gap: 5px;
+}

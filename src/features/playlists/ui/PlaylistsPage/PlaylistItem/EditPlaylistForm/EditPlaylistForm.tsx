@@ -1,6 +1,6 @@
 import type { PlaylistData, UpdatePlaylistMutationArgs } from '@/features/playlists/api/playlistsApi.types'
 import { useForm, type SubmitHandler } from 'react-hook-form'
-import s from '../../PlaylistsPage.module.css'
+import s from './EditPlaylistForm.module.css'
 
 type UpdatePlaylistFormValues = {
     title: string
@@ -39,9 +39,10 @@ export const EditPlaylistForm = ({ playlist, onCancel, onUpdate }: Props) => {
 
     return (
         <form className={s.editForm} onSubmit={handleSubmit(onSubmit)}>
-            <input {...register('title')} placeholder="Playlist title" />
-            <input {...register('description')} placeholder="Description" />
-
+            <div className={s.inputs}>
+                <input {...register('title')} placeholder="Playlist title" />
+                <input {...register('description')} placeholder="Description" />
+            </div>
             <div className={s.actions}>
                 <button type="submit">Save</button>
                 <button type="button" onClick={onCancel}>
