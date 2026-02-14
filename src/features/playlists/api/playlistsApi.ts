@@ -81,5 +81,6 @@ export const {
     useFetchPlaylistsQuery,
     useCreatePlaylistMutation,
     useDeletePlaylistMutation,
-    useUpdatePlaylistMutation
+    useUpdatePlaylistMutation,
+    useUploadPlaylistCoverMutation
 } = playlistsApi
