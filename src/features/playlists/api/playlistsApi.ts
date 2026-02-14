@@ -1,5 +1,6 @@
 // Во избежание ошибок импорт должен быть из `@reduxjs/toolkit/query/react`
 import {baseApi} from '@/app/api/baseApi';
+import type {Images} from '@/common/types';
 import type {
     CreatePlaylistArgs,
     PlaylistData,
@@ -54,7 +55,19 @@ export const playlistsApi = baseApi.injectEndpoints({
             }),
             // 🔄 После обновления перезагружаем список плейлистов
             invalidatesTags: ["Playlists"]
-        })
+        }),
+        uploadPlaylistCover: build.mutation<Images, { playlistId: string; file: File }>({
+            query: ({ playlistId, file }) => {
+                const formData = new FormData()
+                formData.append('file', file)
+                return {
+                    url: `playlists/${playlistId}/images/main`,
+                    method: 'post',
+                    body: formData,
+                }
+            },
+            invalidatesTags: ['Playlists'],
+        }),
     })
 })
 

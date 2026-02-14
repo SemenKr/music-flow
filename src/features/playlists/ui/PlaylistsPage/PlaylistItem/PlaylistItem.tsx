@@ -1,6 +1,7 @@
-import type { PlaylistData, UpdatePlaylistMutationArgs } from '@/features/playlists/api/playlistsApi.types'
+import type {PlaylistData, UpdatePlaylistMutationArgs} from '@/features/playlists/api/playlistsApi.types'
 import {EditPlaylistForm} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/EditPlaylistForm/EditPlaylistForm';
-import s from '../PlaylistsPage.module.css'
+import defaultCover from '@/assets/images/default-playlist-cover.png'
+import s from './PlaylistItem.module.css'
 
 type Props = {
     playlist: PlaylistData
@@ -19,19 +20,14 @@ export const PlaylistItem = ({
                                  onDelete,
                                  onUpdate
                              }: Props) => {
-    const cover = playlist.attributes.images?.main?.[0]?.url
+    const originalCover = playlist.attributes.images.main?.find(img => img.type === 'original')
     const title = playlist.attributes.title
-    const initial = title[0]?.toUpperCase() ?? '?'
+    const src = originalCover ? originalCover?.url : defaultCover
+    const description = playlist.attributes.description
 
     return (
         <article className={s.card}>
-            <div
-                className={s.cover}
-                style={cover ? { backgroundImage: `url(${cover})` } : undefined}
-            >
-                {!cover && <span className={s.coverFallback}>{initial}</span>}
-            </div>
-
+            <img src={src} alt={'cover'} className={s.cover}/>
             <div className={s.cardBody}>
                 {isEditing ? (
                     <EditPlaylistForm
@@ -41,7 +37,8 @@ export const PlaylistItem = ({
                     />
                 ) : (
                     <>
-                        <h2>{title}</h2>
+                        <h3>{title}</h3>
+                        {description && <span>{description}</span>}
                         <p>
                             by {playlist.attributes.user.name} •{' '}
                             {playlist.attributes.tracksCount} tracks
