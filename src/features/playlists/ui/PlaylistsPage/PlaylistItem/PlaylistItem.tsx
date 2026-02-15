@@ -1,9 +1,7 @@
-import defaultCover from '@/assets/images/default-playlist-cover.png'
-import {useDeletePlaylistCoverMutation, useUploadPlaylistCoverMutation} from '@/features/playlists/api/playlistsApi';
 import type {PlaylistData, UpdatePlaylistMutationArgs} from '@/features/playlists/api/playlistsApi.types'
 import {EditPlaylistForm} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/EditPlaylistForm/EditPlaylistForm';
 import {PlaylistCover} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/PlaylistCover/PlaylistCover';
-import {type ChangeEvent, useMemo} from 'react';
+import {useMemo} from 'react';
 import s from './PlaylistItem.module.css'
 
 type Props = {
@@ -23,11 +21,9 @@ export const PlaylistItem = ({
                                  onDelete,
                                  onUpdate
                              }: Props) => {
-    const mediumCover = playlist.attributes.images.main?.find(img => img.type === 'medium')
-    const thumbnailCover = playlist.attributes.images.main?.find(img => img.type === 'thumbnail')
-    const originalCover = playlist.attributes.images.main?.find(img => img.type === 'original')
+
+
     const title = playlist.attributes.title
-    const src = mediumCover?.url ?? thumbnailCover?.url ?? originalCover?.url ?? defaultCover
     const description = playlist.attributes.description
     const addedAt = useMemo(
         () => new Date(playlist.attributes.addedAt).toLocaleDateString(),
@@ -39,42 +35,15 @@ export const PlaylistItem = ({
     )
     const tags = playlist.attributes.tags?.join(', ')
 
-    const [uploadCover] = useUploadPlaylistCoverMutation()
-    const [deleteCover] = useDeletePlaylistCoverMutation()
 
-    const uploadCoverHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const maxSize = 1024 * 1024 // 1 MB
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
 
-        const file = event.target.files?.length && event.target.files[0]
-        if (!file) return
 
-        if (!allowedTypes.includes(file.type)) {
-            alert('Only JPEG, PNG or GIF images are allowed')
-            return
-        }
 
-        if (file.size > maxSize) {
-            alert(`The file is too large. Max size is ${Math.round(maxSize / 1024)} KB`)
-            return
-        }
-
-        uploadCover({playlistId: playlist.id, file})
-        event.target.value = ''
-    }
-
-    const deleteCoverHandler = () => {
-        deleteCover({ playlistId: playlist.id })
-    }
 
     return (
         <article className={s.card}>
             <PlaylistCover
-                src={src}
-                title={title}
-                hasOriginalCover={Boolean(originalCover)}
-                onUploadCover={uploadCoverHandler}
-                onDeleteCover={deleteCoverHandler}
+                playlist={playlist}
             />
             <div className={s.cardBody}>
                 {isEditing ? (
