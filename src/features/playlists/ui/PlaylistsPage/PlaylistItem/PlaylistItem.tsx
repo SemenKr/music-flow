@@ -2,6 +2,7 @@ import defaultCover from '@/assets/images/default-playlist-cover.png'
 import {useDeletePlaylistCoverMutation, useUploadPlaylistCoverMutation} from '@/features/playlists/api/playlistsApi';
 import type {PlaylistData, UpdatePlaylistMutationArgs} from '@/features/playlists/api/playlistsApi.types'
 import {EditPlaylistForm} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/EditPlaylistForm/EditPlaylistForm';
+import {PlaylistCover} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/PlaylistCover/PlaylistCover';
 import {type ChangeEvent, useMemo} from 'react';
 import s from './PlaylistItem.module.css'
 
@@ -59,6 +60,7 @@ export const PlaylistItem = ({
         }
 
         uploadCover({playlistId: playlist.id, file})
+        event.target.value = ''
     }
 
     const deleteCoverHandler = () => {
@@ -67,19 +69,13 @@ export const PlaylistItem = ({
 
     return (
         <article className={s.card}>
-            <div className={s.coverWrapper}>
-                <img
-                    src={src}
-                    alt={title}
-                    className={s.cover}
-                    loading="lazy"
-                    decoding="async"
-                />
-            </div>
-            <div className={s.coverControls}>
-                <input type="file" accept="image/jpeg,image/png,image/gif" onChange={uploadCoverHandler}/>
-                {originalCover && <button onClick={() => deleteCoverHandler()}>delete cover</button>}
-            </div>
+            <PlaylistCover
+                src={src}
+                title={title}
+                hasOriginalCover={Boolean(originalCover)}
+                onUploadCover={uploadCoverHandler}
+                onDeleteCover={deleteCoverHandler}
+            />
             <div className={s.cardBody}>
                 {isEditing ? (
                     <EditPlaylistForm
