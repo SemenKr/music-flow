@@ -2,7 +2,7 @@ import defaultCover from '@/assets/images/default-playlist-cover.png'
 import {useDeletePlaylistCoverMutation, useUploadPlaylistCoverMutation} from '@/features/playlists/api/playlistsApi';
 import type {PlaylistData, UpdatePlaylistMutationArgs} from '@/features/playlists/api/playlistsApi.types'
 import {EditPlaylistForm} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/EditPlaylistForm/EditPlaylistForm';
-import type {ChangeEvent} from 'react';
+import {type ChangeEvent, useMemo} from 'react';
 import s from './PlaylistItem.module.css'
 
 type Props = {
@@ -28,8 +28,14 @@ export const PlaylistItem = ({
     const title = playlist.attributes.title
     const src = mediumCover?.url ?? thumbnailCover?.url ?? originalCover?.url ?? defaultCover
     const description = playlist.attributes.description
-    const addedAt = new Date(playlist.attributes.addedAt).toLocaleDateString()
-    const updatedAt = new Date(playlist.attributes.updatedAt).toLocaleDateString()
+    const addedAt = useMemo(
+        () => new Date(playlist.attributes.addedAt).toLocaleDateString(),
+        [playlist.attributes.addedAt]
+    )
+    const updatedAt = useMemo(
+        () => new Date(playlist.attributes.updatedAt).toLocaleDateString(),
+        [playlist.attributes.updatedAt]
+    )
     const tags = playlist.attributes.tags?.join(', ')
 
     const [uploadCover] = useUploadPlaylistCoverMutation()
