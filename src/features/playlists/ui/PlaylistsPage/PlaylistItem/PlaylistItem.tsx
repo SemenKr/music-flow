@@ -1,7 +1,7 @@
-import {useUploadPlaylistCoverMutation} from '@/features/playlists/api/playlistsApi';
+import defaultCover from '@/assets/images/default-playlist-cover.png'
+import {useDeletePlaylistCoverMutation, useUploadPlaylistCoverMutation} from '@/features/playlists/api/playlistsApi';
 import type {PlaylistData, UpdatePlaylistMutationArgs} from '@/features/playlists/api/playlistsApi.types'
 import {EditPlaylistForm} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/EditPlaylistForm/EditPlaylistForm';
-import defaultCover from '@/assets/images/default-playlist-cover.png'
 import type {ChangeEvent} from 'react';
 import s from './PlaylistItem.module.css'
 
@@ -22,12 +22,18 @@ export const PlaylistItem = ({
                                  onDelete,
                                  onUpdate
                              }: Props) => {
+    const mediumCover = playlist.attributes.images.main?.find(img => img.type === 'medium')
+    const thumbnailCover = playlist.attributes.images.main?.find(img => img.type === 'thumbnail')
     const originalCover = playlist.attributes.images.main?.find(img => img.type === 'original')
     const title = playlist.attributes.title
-    const src = originalCover ? originalCover?.url : defaultCover
+    const src = mediumCover?.url ?? thumbnailCover?.url ?? originalCover?.url ?? defaultCover
     const description = playlist.attributes.description
+    const addedAt = new Date(playlist.attributes.addedAt).toLocaleDateString()
+    const updatedAt = new Date(playlist.attributes.updatedAt).toLocaleDateString()
+    const tags = playlist.attributes.tags?.join(', ')
 
     const [uploadCover] = useUploadPlaylistCoverMutation()
+    const [deleteCover] = useDeletePlaylistCoverMutation()
 
     const uploadCoverHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const maxSize = 1024 * 1024 // 1 MB
@@ -46,13 +52,28 @@ export const PlaylistItem = ({
             return
         }
 
-        uploadCover({ playlistId: playlist.id, file })
+        uploadCover({playlistId: playlist.id, file})
+    }
+
+    const deleteCoverHandler = () => {
+        deleteCover({ playlistId: playlist.id })
     }
 
     return (
         <article className={s.card}>
-            <img src={src} alt={'cover'} className={s.cover}/>
-            <input type="file" accept="image/jpeg,image/png,image/gif" onChange={uploadCoverHandler} />
+            <div className={s.coverWrapper}>
+                <img
+                    src={src}
+                    alt={title}
+                    className={s.cover}
+                    loading="lazy"
+                    decoding="async"
+                />
+            </div>
+            <div className={s.coverControls}>
+                <input type="file" accept="image/jpeg,image/png,image/gif" onChange={uploadCoverHandler}/>
+                {originalCover && <button onClick={() => deleteCoverHandler()}>delete cover</button>}
+            </div>
             <div className={s.cardBody}>
                 {isEditing ? (
                     <EditPlaylistForm
@@ -62,12 +83,25 @@ export const PlaylistItem = ({
                     />
                 ) : (
                     <>
-                        <h3>{title}</h3>
-                        {description && <span>{description}</span>}
-                        <p>
+                        <h3 className={s.cardTitle}>{title}</h3>
+                        {description && <p className={s.cardDesc}>{description}</p>}
+                        <p className={s.cardMeta}>
                             by {playlist.attributes.user.name} •{' '}
                             {playlist.attributes.tracksCount} tracks
                         </p>
+                        <details className={s.details}>
+                            <summary className={s.detailsSummary}>Details</summary>
+                            <div className={s.detailsBody}>
+                                <p className={s.cardMeta}>Added: {addedAt}</p>
+                                <p className={s.cardMeta}>Updated: {updatedAt}</p>
+                                <p className={s.cardMeta}>Order: {playlist.attributes.order}</p>
+                                <p className={s.cardMeta}>
+                                    Reactions: +{playlist.attributes.likesCount} / -{playlist.attributes.dislikesCount}
+                                </p>
+                                {tags && <p className={s.cardMeta}>Tags: {tags}</p>}
+                                <p className={s.cardMeta}>ID: {playlist.id}</p>
+                            </div>
+                        </details>
 
                         <div className={s.actions}>
                             <button onClick={onEdit}>Update</button>

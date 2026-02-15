@@ -68,6 +68,10 @@ export const playlistsApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ['Playlists'],
         }),
+        deletePlaylistCover: build.mutation<void, { playlistId: string }>({
+            query: ({ playlistId }) => ({ url: `playlists/${playlistId}/images/main`, method: 'delete' }),
+            invalidatesTags: ['Playlists'],
+        }),
     })
 })
 
@@ -82,5 +86,6 @@ export const {
     useCreatePlaylistMutation,
     useDeletePlaylistMutation,
     useUpdatePlaylistMutation,
-    useUploadPlaylistCoverMutation
+    useUploadPlaylistCoverMutation,
+    useDeletePlaylistCoverMutation,
 } = playlistsApi
