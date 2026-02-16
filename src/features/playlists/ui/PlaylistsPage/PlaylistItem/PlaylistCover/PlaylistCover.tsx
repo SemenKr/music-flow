@@ -24,6 +24,7 @@ export const PlaylistCover = ({playlist}: Props) => {
     const mediumCover = playlist.attributes.images.main?.find(img => img.type === 'medium')
     const thumbnailCover = playlist.attributes.images.main?.find(img => img.type === 'thumbnail')
     const src = mediumCover?.url ?? thumbnailCover?.url ?? originalCover?.url ?? defaultCover
+
     const uploadCoverHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const maxSize = 1024 * 1024 // 1 MB
         const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
