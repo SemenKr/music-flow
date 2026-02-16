@@ -1,3 +1,4 @@
+import {useDebounceValue} from '@/common/hooks';
 import {useFetchPlaylistsQuery} from '@/features/playlists/api/playlistsApi'
 import {useState} from 'react'
 import {CreatePlaylistForm} from './CreatePlaylistForm/CreatePlaylistForm'
@@ -6,7 +7,8 @@ import s from './PlaylistsPage.module.css'
 
 export const PlaylistsPage = () => {
     const [search, setSearch] = useState('')
-    const { data, error, isLoading } = useFetchPlaylistsQuery({ search })
+    const debounceSearch = useDebounceValue(search)
+    const { data, error, isLoading } = useFetchPlaylistsQuery({ search: debounceSearch })
 
 
     const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null)
