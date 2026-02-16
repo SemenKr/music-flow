@@ -2,7 +2,7 @@
 import {baseApi} from '@/app/api/baseApi';
 import type {Images} from '@/common/types';
 import type {
-    CreatePlaylistArgs,
+    CreatePlaylistArgs, FetchPlaylistsArgs,
     PlaylistData,
     PlaylistsResponse,
     UpdatePlaylistArgs
@@ -16,10 +16,11 @@ export const playlistsApi = baseApi.injectEndpoints({
     endpoints: build => ({
         // 📋 Получение списка всех плейлистов
         // Типизация: <возвращаемый тип, тип аргументов запроса>
-        fetchPlaylists: build.query<PlaylistsResponse, void>({
-            query: () => ({
+        fetchPlaylists: build.query<PlaylistsResponse, FetchPlaylistsArgs>({
+            query: (params) => ({
                 method: 'get',
                 url: `playlists`,
+                params
             }),
             // ✅ Помечаем, что этот запрос предоставляет данные с тегом "Playlists"
             providesTags: ["Playlists"]

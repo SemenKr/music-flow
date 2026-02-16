@@ -5,7 +5,8 @@ import {PlaylistItem} from './PlaylistItem/PlaylistItem'
 import s from './PlaylistsPage.module.css'
 
 export const PlaylistsPage = () => {
-    const { data, error, isLoading } = useFetchPlaylistsQuery()
+    const [search, setSearch] = useState('')
+    const { data, error, isLoading } = useFetchPlaylistsQuery({ search })
 
 
     const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null)
@@ -15,13 +16,16 @@ export const PlaylistsPage = () => {
 
     return (
         <section className={s.page}>
-            <header className={s.hero}>…</header>
-
+            <input
+                type="search"
+                placeholder={'Search playlist by title'}
+                onChange={e => setSearch(e.currentTarget.value)}
+            />
             <div className={s.grid}>
                 <div className={s.formCard}>
                     <CreatePlaylistForm />
                 </div>
-
+                {!data?.data.length && !isLoading && <h2>Playlists not found</h2>}
                 {data?.data.map(playlist => (
                     <PlaylistItem
                         key={playlist.id}
