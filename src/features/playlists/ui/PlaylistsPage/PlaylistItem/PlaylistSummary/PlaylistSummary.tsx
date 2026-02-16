@@ -12,7 +12,7 @@ export const PlaylistSummary = ({playlist}: Props) => {
     return (
         <>
             <h3 className={s.title}>{title}</h3>
-            {description && <p className={s.desc}>{description}</p>}
+            {description && <p className={s.desc}>description: {description}</p>}
             <p className={s.meta}>
                 by {playlist.attributes.user.name} • {playlist.attributes.tracksCount} tracks
             </p>

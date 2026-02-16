@@ -1,17 +1,12 @@
-import {
-    useDeletePlaylistMutation,
-    useFetchPlaylistsQuery,
-    useUpdatePlaylistMutation
-} from '@/features/playlists/api/playlistsApi'
-import { CreatePlaylistForm } from './CreatePlaylistForm/CreatePlaylistForm'
-import { PlaylistItem } from './PlaylistItem/PlaylistItem'
-import { useState } from 'react'
+import {useFetchPlaylistsQuery} from '@/features/playlists/api/playlistsApi'
+import {useState} from 'react'
+import {CreatePlaylistForm} from './CreatePlaylistForm/CreatePlaylistForm'
+import {PlaylistItem} from './PlaylistItem/PlaylistItem'
 import s from './PlaylistsPage.module.css'
 
 export const PlaylistsPage = () => {
     const { data, error, isLoading } = useFetchPlaylistsQuery()
-    const [deletePlaylist] = useDeletePlaylistMutation()
-    const [updatePlaylist] = useUpdatePlaylistMutation()
+
 
     const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null)
 
@@ -34,8 +29,6 @@ export const PlaylistsPage = () => {
                         isEditing={editingPlaylistId === playlist.id}
                         onEdit={() => setEditingPlaylistId(playlist.id)}
                         onCancelEdit={() => setEditingPlaylistId(null)}
-                        onDelete={() => deletePlaylist(playlist.id)}
-                        onUpdate={updatePlaylist}
                     />
                 ))}
             </div>

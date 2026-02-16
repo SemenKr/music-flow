@@ -1,4 +1,4 @@
-import type {PlaylistData, UpdatePlaylistMutationArgs} from '@/features/playlists/api/playlistsApi.types'
+import type {PlaylistData} from '@/features/playlists/api/playlistsApi.types'
 import {EditPlaylistForm} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/EditPlaylistForm/EditPlaylistForm'
 import {PlaylistActions} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/PlaylistActions/PlaylistActions'
 import {PlaylistCover} from '@/features/playlists/ui/PlaylistsPage/PlaylistItem/PlaylistCover/PlaylistCover'
@@ -11,8 +11,6 @@ type Props = {
     isEditing: boolean
     onEdit: () => void
     onCancelEdit: () => void
-    onDelete: (playlistId: string) => void
-    onUpdate: (args: UpdatePlaylistMutationArgs) => Promise<unknown>
 }
 
 export const PlaylistItem = ({
@@ -20,8 +18,6 @@ export const PlaylistItem = ({
                                  isEditing,
                                  onEdit,
                                  onCancelEdit,
-                                 onDelete,
-                                 onUpdate
                              }: Props) => {
     return (
         <article className={s.card}>
@@ -33,7 +29,6 @@ export const PlaylistItem = ({
                     <EditPlaylistForm
                         playlist={playlist}
                         onCancel={onCancelEdit}
-                        onUpdate={onUpdate}
                     />
                 ) : (
                     <>
@@ -42,7 +37,6 @@ export const PlaylistItem = ({
                         <PlaylistActions
                             playlistId={playlist.id}
                             onEdit={onEdit}
-                            onDelete={onDelete}
                         />
                     </>
                 )}
