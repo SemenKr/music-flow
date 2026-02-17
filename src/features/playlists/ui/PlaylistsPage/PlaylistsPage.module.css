@@ -85,7 +85,6 @@
     color: var(--accent);
 }
 
-.state,
 .stateError {
     position: relative;
     z-index: 1;
@@ -94,31 +93,7 @@
     margin: 24px 0;
     background: rgba(9, 12, 20, 0.6);
     border: 1px solid var(--card-border);
-}
-
-.stateError {
     color: #ff9aa2;
-}
-
-.grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 320px));
-    justify-content: center;
-    gap: 22px;
-}
-
-.formCard {
-    display: flex;
-    width: 100%;
-    max-width: 320px;
-    justify-self: center;
-    min-width: 0;
-}
-
-.formCard > * {
-    width: 100%;
 }
 
 .heroBadge:hover {

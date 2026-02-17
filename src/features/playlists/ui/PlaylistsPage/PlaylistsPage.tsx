@@ -2,27 +2,28 @@ import {Pagination} from '@/common/components/Pagination/Pagination';
 import {useDebounceValue} from '@/common/hooks';
 import {useFetchPlaylistsQuery} from '@/features/playlists/api/playlistsApi'
 import {useState} from 'react'
-import {CreatePlaylistForm} from './CreatePlaylistForm/CreatePlaylistForm'
 import {PlaylistSearch} from './PlaylistSearch/PlaylistSearch'
-import {PlaylistItem} from './PlaylistItem/PlaylistItem'
+import {PlaylistsList} from './PlaylistsList/PlaylistsList'
 import s from './PlaylistsPage.module.css'
 
 export const PlaylistsPage = () => {
     const [search, setSearch] = useState('')
     const [currentPage, setCurrentPage] = useState(1)
+    const [pageSize, setPageSize] = useState(5)
     const debounceSearch = useDebounceValue(search)
     const { data, error, isLoading } = useFetchPlaylistsQuery({
         search: debounceSearch,
         pageNumber: currentPage,
-        pageSize: 5,
+        pageSize,
     })
 
     const totalCount = data?.meta?.totalCount ?? 0
     const shownCount = data?.data.length ?? 0
 
-    const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null)
-
-    if (isLoading) return <div className={s.state}>Loading playlists…</div>
+    const changePageSizeHandler = (size: number) => {
+        setPageSize(size)
+        setCurrentPage(1)
+    }
     if (error) return <div className={s.stateError}>Could not load playlists.</div>
 
     return (
@@ -43,25 +44,13 @@ export const PlaylistsPage = () => {
                     />
                 </div>
             </div>
-            <div className={s.grid}>
-                <div className={s.formCard}>
-                    <CreatePlaylistForm />
-                </div>
-                {!data?.data.length && !isLoading && <h2>Playlists not found</h2>}
-                {data?.data.map(playlist => (
-                    <PlaylistItem
-                        key={playlist.id}
-                        playlist={playlist}
-                        isEditing={editingPlaylistId === playlist.id}
-                        onEdit={() => setEditingPlaylistId(playlist.id)}
-                        onCancelEdit={() => setEditingPlaylistId(null)}
-                    />
-                ))}
-            </div>
+            <PlaylistsList playlists={data?.data || []} isPlaylistsLoading={isLoading} />
             <Pagination
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 pagesCount={data?.meta.pagesCount || 1}
+                pageSize={pageSize}
+                changePageSize={changePageSizeHandler}
             />
         </section>
     )
