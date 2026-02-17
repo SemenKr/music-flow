@@ -2,7 +2,7 @@ import {Pagination} from '@/common/components/Pagination/Pagination';
 import {useDebounceValue} from '@/common/hooks';
 import {useFetchPlaylistsQuery} from '@/features/playlists/api/playlistsApi'
 import {useState} from 'react'
-import {PlaylistSearch} from './PlaylistSearch/PlaylistSearch'
+import {PlaylistsHero} from './PlaylistsHero/PlaylistsHero'
 import {PlaylistsList} from './PlaylistsList/PlaylistsList'
 import s from './PlaylistsPage.module.css'
 
@@ -33,22 +33,13 @@ export const PlaylistsPage = () => {
 
     return (
         <section className={s.page}>
-            <div className={s.hero}>
-                <div className={s.heroHeader}>
-                    <p className={s.eyebrow}>Library</p>
-                    <h1 className={s.title}>Playlists</h1>
-                    <p className={s.subtitle}>Search by title and keep your mixes organized.</p>
-                </div>
-                <div className={s.searchSlot}>
-                    <PlaylistSearch
-                        value={search}
-                        onChange={searchPlayListHandler}
-                        resultsCount={shownCount}
-                        totalCount={totalCount}
-                        isLoading={isLoading}
-                    />
-                </div>
-            </div>
+            <PlaylistsHero
+                search={search}
+                onSearchChange={searchPlayListHandler}
+                resultsCount={shownCount}
+                totalCount={totalCount}
+                isLoading={isLoading}
+            />
             <PlaylistsList playlists={data?.data || []} isPlaylistsLoading={isLoading} />
             <Pagination
                 currentPage={currentPage}
