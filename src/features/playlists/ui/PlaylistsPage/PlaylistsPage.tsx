@@ -11,11 +11,12 @@ export const PlaylistsPage = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [pageSize, setPageSize] = useState(5)
     const debounceSearch = useDebounceValue(search)
+
     const { data, error, isLoading } = useFetchPlaylistsQuery({
         search: debounceSearch,
         pageNumber: currentPage,
         pageSize,
-    })
+    }, {refetchOnFocus: true})
 
     const totalCount = data?.meta?.totalCount ?? 0
     const shownCount = data?.data.length ?? 0
