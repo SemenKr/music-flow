@@ -24,6 +24,11 @@ export const PlaylistsPage = () => {
         setPageSize(size)
         setCurrentPage(1)
     }
+
+    const searchPlayListHandler = (value: string) => {
+        setSearch(value)
+        setCurrentPage(1)
+    }
     if (error) return <div className={s.stateError}>Could not load playlists.</div>
 
     return (
@@ -37,7 +42,7 @@ export const PlaylistsPage = () => {
                 <div className={s.searchSlot}>
                     <PlaylistSearch
                         value={search}
-                        onChange={setSearch}
+                        onChange={searchPlayListHandler}
                         resultsCount={shownCount}
                         totalCount={totalCount}
                         isLoading={isLoading}
