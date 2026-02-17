@@ -22,9 +22,8 @@ export const PlaylistsPage = () => {
             refetchOnFocus: true, // 🔄 Автоматически повторять запрос при возврате фокуса на вкладку
         }
     )
-
-    const totalCount = data?.meta?.totalCount ?? 0
-    const shownCount = data?.data.length ?? 0
+    const totalCount = data?.meta?.totalCount ?? 0 // 📊 Общее количество плейлистов (из метаданных ответа)
+    const shownCount = data?.data.length ?? 0 // 📄 Количество плейлистов, отображаемых на текущей странице
 
     const changePageSizeHandler = (size: number) => {
         setPageSize(size)
