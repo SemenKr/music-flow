@@ -2,30 +2,29 @@
     display: grid;
     grid-template-rows: auto auto 1fr;
     gap: 14px;
-    width: 100%;
-    max-width: 320px;
-    justify-self: center;
-    padding: 16px;
-    border-radius: 18px;
-    min-width: 0;
-    overflow: hidden;
 
+    padding: 18px;
+    border-radius: 20px;
+    min-width: 0;
+    height: 100%;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     box-shadow: var(--shadow);
     backdrop-filter: blur(14px);
-    transform: translateY(12px);
-    opacity: 0;
-    animation: fadeUp 420ms ease forwards;
-    transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
-    will-change: transform, box-shadow;
-    backface-visibility: hidden;
+
+    transition:
+            transform 200ms ease,
+            border-color 200ms ease,
+            box-shadow 200ms ease;
+
+    will-change: transform;
 }
 
 .card:hover {
-    transform: translateY(3px) scale(1.01) translateZ(0);
-    border-color: rgba(255, 255, 255, 0.22);
-    box-shadow: var(--shadow-hover);
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(18px);
 }
 
 .card:focus-within {
