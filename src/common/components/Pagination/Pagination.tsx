@@ -1,4 +1,6 @@
 import {getPaginationPages} from '@/common/utils';
+import {PaginationControls} from './PaginationControls'
+import {PaginationMeta} from './PaginationMeta'
 import s from './Pagination.module.css'
 
 type Props = {
@@ -23,44 +25,15 @@ export const Pagination = (
 
     return (
         <div className={s.paginationBar}>
-            <div className={s.pagination}>
-                {pages.map((page, idx) =>
-                        page === '...' ? (
-                            <span className={s.ellipsis} key={`ellipsis-${idx}`}>
-                ...
-              </span>
-                        ) : (
-                            <button
-                                key={page}
-                                className={
-                                    page === currentPage ? `${s.pageButton} ${s.pageButtonActive}` : s.pageButton
-                                }
-                                onClick={() => page !== currentPage && setCurrentPage(Number(page))}
-                                disabled={page === currentPage}
-                                type="button"
-                            >
-                                {page}
-                            </button>
-                        )
-                )}
-            </div>
-            <div className={s.paginationMeta}>
-                <label className={s.pageSizeLabel}>
-                    Show
-                    <select
-                        className={s.pageSizeSelect}
-                        value={pageSize}
-                        onChange={e => changePageSize(Number(e.target.value))}
-                    >
-                        {[3, 5, 7, 15, 33].map(size => (
-                            <option value={size} key={size}>
-                                {size}
-                            </option>
-                        ))}
-                    </select>
-                    per page
-                </label>
-            </div>
+            <PaginationControls
+                pages={pages}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+            />
+            <PaginationMeta
+                pageSize={pageSize}
+                onPageSizeChange={changePageSize}
+            />
         </div>
     )
 }
