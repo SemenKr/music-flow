@@ -12,11 +12,16 @@ export const PlaylistsPage = () => {
     const [pageSize, setPageSize] = useState(5)
     const debounceSearch = useDebounceValue(search)
 
-    const { data, error, isLoading } = useFetchPlaylistsQuery({
-        search: debounceSearch,
-        pageNumber: currentPage,
-        pageSize,
-    }, {refetchOnFocus: true})
+    const { data, error, isLoading } = useFetchPlaylistsQuery(
+        {
+            search: debounceSearch, // 🔎 Строка поиска (debounced, чтобы не отправлять запрос на каждый ввод)
+            pageNumber: currentPage, // 📄 Текущая страница пагинации
+            pageSize, // 📦 Количество элементов на странице
+        },
+        {
+            refetchOnFocus: true, // 🔄 Автоматически повторять запрос при возврате фокуса на вкладку
+        }
+    )
 
     const totalCount = data?.meta?.totalCount ?? 0
     const shownCount = data?.data.length ?? 0
