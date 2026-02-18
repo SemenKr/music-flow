@@ -1,0 +1,18 @@
+.sentinel {
+    margin-top: 28px;
+    display: flex;
+    justify-content: center;
+}
+
+.loading {
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: rgba(9, 12, 20, 0.6);
+    color: var(--page-muted);
+    box-shadow: var(--shadow-soft);
+}
+
+.sentinelSpacer {
+    height: 20px;
+}
