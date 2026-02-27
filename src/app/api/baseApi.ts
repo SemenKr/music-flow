@@ -11,20 +11,22 @@ export const baseApi = createApi({
     // ⏳ Хранить данные в кэше 86400 секунд (24 часа) после того, как они перестали использоваться
     keepUnusedDataFor: 86400,
     // 🌐 Базовая конфигурация для всех запросов
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_BASE_URL,
-        headers: {
-            'API-KEY': import.meta.env.VITE_API_KEY,
-        },
-        // 🔐 Добавляем токен авторизации к каждому запросу
-        prepareHeaders: headers => {
-            headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
-            return headers
-        },
-    }),
+    baseQuery: (args, api, extraOptions) => {
+        return fetchBaseQuery({
+            baseUrl: import.meta.env.VITE_BASE_URL,
+            headers: {
+                'API-KEY': import.meta.env.VITE_API_KEY,
+            },
+            // 🔐 Добавляем токен авторизации к каждому запросу
+            prepareHeaders: headers => {
+                headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
+                return headers
+            },
+        })(args, api, extraOptions)
+    } ,
     // 🔄 Повторно запрашивать данные при возврате фокуса на вкладку браузера
     // refetchOnFocus: true,
     // 🌐 Повторно запрашивать данные при восстановлении интернет-соединения
-    refetchOnReconnect: true,
+    // refetchOnReconnect: true,
     endpoints: () => ({}),
 })
