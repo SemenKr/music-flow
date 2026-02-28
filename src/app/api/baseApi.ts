@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const baseApi = createApi({
     // 📁 Имя редьюсера - куда будут сохранены состояние и экшены для этого API
-    reducerPath: 'playlistsApi',
+    reducerPath: 'baseApi',
 
     // 🏷️ Теги для автоматической инвалидации кэша
     // Когда данные изменяются (создание/обновление/удаление),

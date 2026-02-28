@@ -1,5 +1,4 @@
 import {baseApi} from '@/app/api/baseApi';
-import {playlistsApi} from '@/features/playlists/api/playlistsApi.ts'
 import {configureStore} from '@reduxjs/toolkit'
 import {setupListeners} from '@reduxjs/toolkit/query'
 
@@ -9,8 +8,10 @@ export const store = configureStore({
         [baseApi.reducerPath]: baseApi.reducer,
     },
     // Add RTK Query middleware for caching, polling, and request lifecycle.
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(playlistsApi.middleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware),
 })
+
+export type RootState = ReturnType<typeof store.getState>
 
 // Enable refetch on focus/reconnect behaviors for RTK Query.
 setupListeners(store.dispatch)
