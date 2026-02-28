@@ -1,4 +1,4 @@
-import {LinearProgress, Pagination} from '@/common/components';
+import {Pagination} from '@/common/components';
 import {useDebounceValue} from '@/common/hooks';
 import {useFetchPlaylistsQuery} from '@/features/playlists/api/playlistsApi'
 import {useState} from 'react'
@@ -12,7 +12,7 @@ export const PlaylistsPage = () => {
     const [pageSize, setPageSize] = useState(5)
     const debounceSearch = useDebounceValue(search)
 
-    const { data, error, isLoading, isFetching } = useFetchPlaylistsQuery(
+    const { data, error, isLoading } = useFetchPlaylistsQuery(
         {
             search: debounceSearch, // 🔎 Строка поиска (debounced, чтобы не отправлять запрос на каждый ввод)
             pageNumber: currentPage, // 📄 Текущая страница пагинации
@@ -48,7 +48,6 @@ export const PlaylistsPage = () => {
                 isLoading={isLoading}
             />
             <PlaylistsList playlists={data?.data || []} isPlaylistsLoading={isLoading} />
-            {isFetching && <LinearProgress />}
             <Pagination
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}

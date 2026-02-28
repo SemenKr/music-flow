@@ -1,7 +1,12 @@
 import { NavLink } from 'react-router'
 import {Path} from '@/common/routing'
 import {useTheme} from '@/common/hooks/useTheme'
+import {LinearProgress} from '../LinearProgress/LinearProgress'
 import s from './Header.module.css'
+
+type Props = {
+    showProgress?: boolean
+}
 
 const navItems = [
     { to: Path.Main, label: 'Main' },
@@ -10,7 +15,7 @@ const navItems = [
     { to: Path.Profile, label: 'Profile' },
 ]
 
-export const Header = () => {
+export const Header = ({showProgress}: Props) => {
     const {preference, resolvedTheme, toggleTheme} = useTheme()
 
     return (
@@ -46,6 +51,7 @@ export const Header = () => {
                     </span>
                 </button>
             </nav>
+            {showProgress && <LinearProgress className={s.progress} />}
         </header>
     )
 }
