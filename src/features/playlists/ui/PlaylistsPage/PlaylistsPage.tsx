@@ -1,6 +1,7 @@
 import {Pagination} from '@/common/components';
 import {useDebounceValue} from '@/common/hooks';
 import {useFetchPlaylistsQuery} from '@/features/playlists/api/playlistsApi'
+import {PlaylistsPageSkeleton} from '@/features/playlists/ui/PlaylistsPage/PlaylistsPageSkeleton/PlaylistsPageSkeleton';
 import {useState} from 'react'
 import {PlaylistsHero} from './PlaylistsHero/PlaylistsHero'
 import {PlaylistsList} from './PlaylistsList/PlaylistsList'
@@ -37,7 +38,7 @@ export const PlaylistsPage = () => {
         setCurrentPage(1)
     }
     if (error) return <div className={s.stateError}>Could not load playlists.</div>
-    if (isLoading) return <h1>Skeleton loader...</h1>
+    if (isLoading) return <PlaylistsPageSkeleton />
     return (
         <section className={s.page}>
             <PlaylistsHero

@@ -19,38 +19,41 @@ export const Header = ({showProgress}: Props) => {
     const {preference, resolvedTheme, toggleTheme} = useTheme()
 
     return (
-        <header className={s.container}>
-            <nav className={s.nav}>
-                <ul className={s.list}>
-                    {navItems.map(item => (
-                        <li key={item.to}>
-                            <NavLink
-                                to={item.to}
-                                className={({ isActive }) =>
-                                    `${s.link} ${isActive ? s.activeLink : ''}`
-                                }
-                            >
-                                {item.label}
-                            </NavLink>
-                        </li>
-                    ))}
-                </ul>
-                <button
-                    type="button"
-                    className={s.themeToggle}
-                    onClick={toggleTheme}
-                    aria-label="Toggle color theme"
-                    aria-pressed={resolvedTheme === 'dark'}
-                    data-theme={resolvedTheme}
-                    title={preference === 'system' ? `Theme: ${resolvedTheme} (system)` : `Theme: ${resolvedTheme}`}
-                >
+        <header className={s.header}>
+            <div className={s.container}>
+                <nav className={s.nav}>
+                    <ul className={s.list}>
+                        {navItems.map(item => (
+                            <li key={item.to}>
+                                <NavLink
+                                    to={item.to}
+                                    className={({ isActive }) =>
+                                        `${s.link} ${isActive ? s.activeLink : ''}`
+                                    }
+                                >
+                                    {item.label}
+                                </NavLink>
+                            </li>
+                        ))}
+                    </ul>
+                    <button
+                        type="button"
+                        className={s.themeToggle}
+                        onClick={toggleTheme}
+                        aria-label="Toggle color theme"
+                        aria-pressed={resolvedTheme === 'dark'}
+                        data-theme={resolvedTheme}
+                        title={preference === 'system' ? `Theme: ${resolvedTheme} (system)` : `Theme: ${resolvedTheme}`}
+                    >
                     <span className={s.toggleTrack} aria-hidden="true">
                         <span className={s.toggleThumb} />
                         <span className={s.toggleIcon} data-icon="sun" />
                         <span className={s.toggleIcon} data-icon="moon" />
                     </span>
-                </button>
-            </nav>
+                    </button>
+                </nav>
+            </div>
+
             {showProgress && <LinearProgress className={s.progress} />}
         </header>
     )

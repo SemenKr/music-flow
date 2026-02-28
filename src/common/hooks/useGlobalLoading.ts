@@ -1,50 +1,56 @@
-import type { RootState } from '@/app/model/store.ts'
-import { useSelector } from 'react-redux'
+import type {RootState} from '@/app/model/store.ts'
+import {playlistsApi} from '@/features/playlists/api/playlistsApi'
+import {tracksApi} from '@/features/tracks/api/tracksApi'
+import {useSelector} from 'react-redux'
 
 /**
- * Глобальный хук для отслеживания загрузки во всём приложении.
- *
- * Идея:
- * RTK Query хранит состояние всех запросов и мутаций
- * внутри slice (baseApi). Мы проверяем их статусы
- * и определяем, есть ли хотя бы один активный запрос.
+ * Эндпоинты, которые НЕ должны запускать глобальный лоадер
+ */
+const excludedEndpoints = [
+    playlistsApi.endpoints.fetchPlaylists.name,
+    tracksApi.endpoints.fetchTracks.name,
+]
+
+/**
+ * Хук возвращает true,
+ * если есть активный (pending) запрос,
+ * кроме исключённых.
  */
 export const useGlobalLoading = () => {
     return useSelector((state: RootState) => {
-        /**
-         * state.baseApi.queries — объект со всеми query-запросами
-         * state.baseApi.mutations — объект со всеми mutation-запросами
-         *
-         * Object.values превращает объект в массив,
-         * чтобы можно было удобно проверить статусы.
-         */
+        // Все query и mutation из RTK Query
         const queries = Object.values(state.baseApi.queries || {})
         const mutations = Object.values(state.baseApi.mutations || {})
 
         /**
-         * Проверяем, есть ли хотя бы один запрос со статусом 'pending'.
-         *
-         * pending означает:
-         * - запрос отправлен
-         * - ответ ещё не получен
+         * 🔎 Проверяем queries:
+         * 1. Берём только pending
+         * 2. Игнорируем исключённые эндпоинты
          */
-        const hasActiveQueries = queries.some(
-            query => query?.status === 'pending'
-        )
+        const hasActiveQueries = queries.some(query => {
+            if (query?.status !== 'pending') return false
 
+            // Если эндпоинт в исключениях —
+            // показываем лоадер только если уже были успешные запросы
+            if (excludedEndpoints.includes(query.endpointName)) {
+                const completedQueries = queries.filter(
+                    q => q?.status === 'fulfilled'
+                )
+                return completedQueries.length > 0
+            }
+
+            return true
+        })
+
+        /**
+         * 🔄 Проверяем mutations:
+         * Любая pending-мутация включает лоадер
+         */
         const hasActiveMutations = mutations.some(
             mutation => mutation?.status === 'pending'
         )
 
-        /**
-         * Если хотя бы один query или mutation выполняется —
-         * возвращаем true.
-         *
-         * Это значение можно использовать для:
-         * - глобального LinearProgress
-         * - блокировки UI
-         * - отображения лоадера
-         */
+        // 🚦 Если есть активные запросы или мутации — включаем глобальный лоадер
         return hasActiveQueries || hasActiveMutations
     })
 }

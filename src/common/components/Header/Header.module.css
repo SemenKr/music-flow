@@ -1,7 +1,12 @@
-.container {
+.header {
     position: sticky;
     top: 0;
     z-index: 10;
+}
+
+.container {
+
+
     border-bottom: 1px solid var(--card-border);
     background: var(--header-bg);
     backdrop-filter: blur(16px);
