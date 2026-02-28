@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router'
 import {Path} from '@/common/routing'
 import {useTheme} from '@/common/hooks/useTheme'
-import {LinearProgress} from '../LinearProgress/LinearProgress'
+import {LinearProgress} from '@/common/components'
 import s from './Header.module.css'
 
 type Props = {
