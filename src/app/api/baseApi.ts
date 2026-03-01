@@ -1,39 +1,53 @@
-import {handleErrors} from '@/common/utils';
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { handleErrors } from '@/common/utils'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const baseApi = createApi({
-    // 📁 Имя редьюсера - куда будут сохранены состояние и экшены для этого API
+    // 📁 Ключ в store, под которым RTK Query сохранит состояние этого API
     reducerPath: 'baseApi',
 
-    // 🏷️ Теги для автоматической инвалидации кэша
-    // Когда данные изменяются (создание/обновление/удаление),
-    // RTK Query автоматически обновит список плейлистов
+    // 🏷️ Список тегов для инвалидации кэша
+    // Используются в providesTags / invalidatesTags
     tagTypes: ['Playlists'],
-    // ⏳ Хранить данные в кэше 86400 секунд (24 часа) после того, как они перестали использоваться
+
+    // ⏳ Время хранения данных в кэше (в секундах)
+    // 86400 = 24 часа после того, как подписчиков на запрос больше нет
     keepUnusedDataFor: 86400,
-    // 🌐 Базовая конфигурация для всех запросов
+
+    // 🌐 Базовый обработчик всех HTTP-запросов
     baseQuery: async (args, api, extraOptions) => {
+        // 🔧 Конфигурация fetchBaseQuery
         const result = await fetchBaseQuery({
-            baseUrl: import.meta.env.VITE_BASE_URL,
+            baseUrl: import.meta.env.VITE_BASE_URL, // 🌍 Базовый URL API
+
             headers: {
-                'API-KEY': import.meta.env.VITE_API_KEY,
+                'API-KEY': import.meta.env.VITE_API_KEY, // 🔑 Статический API-ключ
             },
-            // 🔐 Добавляем токен авторизации к каждому запросу
+
+            // 🔐 Подготовка заголовков перед каждым запросом
             prepareHeaders: headers => {
-                headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
+                // Добавляем Bearer-токен авторизации
+                headers.set(
+                    'Authorization',
+                    `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`
+                )
                 return headers
             },
         })(args, api, extraOptions)
 
+        // ❗ Глобальная обработка ошибок
         if (result.error) {
             handleErrors(result.error)
         }
 
         return result
     },
-    // 🔄 Повторно запрашивать данные при возврате фокуса на вкладку браузера
+
+    // 🔄 Автоматический рефетч при возврате фокуса на вкладку
     // refetchOnFocus: true,
-    // 🌐 Повторно запрашивать данные при восстановлении интернет-соединения
+
+    // 🌐 Автоматический рефетч при восстановлении соединения
     // refetchOnReconnect: true,
+
+    // 📦 Эндпоинты подключаются через injectEndpoints
     endpoints: () => ({}),
 })
