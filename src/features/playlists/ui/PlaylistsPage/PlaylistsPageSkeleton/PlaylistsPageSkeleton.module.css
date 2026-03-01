@@ -81,7 +81,6 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    max-width: 560px;
 }
 
 .searchCard::before {

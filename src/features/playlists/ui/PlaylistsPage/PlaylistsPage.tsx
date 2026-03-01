@@ -13,7 +13,7 @@ export const PlaylistsPage = () => {
     const [pageSize, setPageSize] = useState(5)
     const debounceSearch = useDebounceValue(search)
 
-    const { data, error, isLoading } = useFetchPlaylistsQuery(
+    const { data, isLoading } = useFetchPlaylistsQuery(
         {
             search: debounceSearch, // 🔎 Строка поиска (debounced, чтобы не отправлять запрос на каждый ввод)
             pageNumber: currentPage, // 📄 Текущая страница пагинации
@@ -25,6 +25,7 @@ export const PlaylistsPage = () => {
             skipPollingIfUnfocused: true, // 👀 Приостанавливать polling, если вкладка браузера не в фокусе
         }
     )
+
     const totalCount = data?.meta?.totalCount ?? 0 // 📊 Общее количество плейлистов (из метаданных ответа)
     const shownCount = data?.data.length ?? 0 // 📄 Количество плейлистов, отображаемых на текущей странице
 
@@ -37,7 +38,8 @@ export const PlaylistsPage = () => {
         setSearch(value)
         setCurrentPage(1)
     }
-    if (error) return <div className={s.stateError}>Could not load playlists.</div>
+
+
     if (isLoading) return <PlaylistsPageSkeleton />
     return (
         <section className={s.page}>
