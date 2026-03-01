@@ -1,4 +1,4 @@
 export type MeResponse = {
-    userId: string
-    login: string
+  userId: string
+  login: string
 }

@@ -1,20 +1,19 @@
 .paginationBar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 16px 22px;
-    margin-top: 28px;
-    padding: 14px 18px;
-    border-radius: 18px;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
-    box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px 22px;
+  margin-top: 28px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-soft);
 }
 
-
 @media (max-width: 640px) {
-    .paginationBar {
-        padding: 12px 14px;
-    }
+  .paginationBar {
+    padding: 12px 14px;
+  }
 }

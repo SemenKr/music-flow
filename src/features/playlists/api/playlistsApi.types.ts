@@ -1,79 +1,78 @@
-import type {CurrentUserReaction} from '@/common/enums';
-import type {Images, Tag, User} from '@/common/types';
-
+import type { CurrentUserReaction } from '@/common/enums'
+import type { Images, Tag, User } from '@/common/types'
 
 export type PlaylistsResponse = {
-    data: PlaylistData[]
-    meta: PlaylistMeta
+  data: PlaylistData[]
+  meta: PlaylistMeta
 }
 
 export type PlaylistData = {
-    id: string
-    type: 'playlists'
-    attributes: PlaylistAttributes
+  id: string
+  type: 'playlists'
+  attributes: PlaylistAttributes
 }
 
 export type PlaylistMeta = {
-    page: number
-    pageSize: number
-    totalCount: number
-    pagesCount: number
+  page: number
+  pageSize: number
+  totalCount: number
+  pagesCount: number
 }
 
 export type PlaylistAttributes = {
-    title: string
-    description: string
-    addedAt: string
-    updatedAt: string
-    order: number
-    dislikesCount: number
-    likesCount: number
-    tracksCount: number
-    tags: Tag[]
-    images: Images
-    user: User
-    currentUserReaction: CurrentUserReaction
+  title: string
+  description: string
+  addedAt: string
+  updatedAt: string
+  order: number
+  dislikesCount: number
+  likesCount: number
+  tracksCount: number
+  tags: Tag[]
+  images: Images
+  user: User
+  currentUserReaction: CurrentUserReaction
 }
 
 // Arguments
 export type FetchPlaylistsArgs = {
-    pageNumber?: number
-    pageSize?: number
-    search?: string
-    sortBy?: 'addedAt' | 'likesCount'
-    sortDirection?: 'asc' | 'desc'
-    tagsIds?: string[]
-    userId?: string
-    trackId?: string
+  pageNumber?: number
+  pageSize?: number
+  search?: string
+  sortBy?: 'addedAt' | 'likesCount'
+  sortDirection?: 'asc' | 'desc'
+  tagsIds?: string[]
+  userId?: string
+  trackId?: string
 }
 
 export type CreatePlaylistArgs = {
-    data: {
-        type: 'playlists'
-        attributes: {
-            title: string
-            description: string
-        }
+  data: {
+    type: 'playlists'
+    attributes: {
+      title: string
+      description: string
     }
+  }
 }
 
 export type UpdatePlaylistArgs = {
-    data: {
-        type: 'playlists'
-        attributes: {
-            title: string
-            description: string
-            tagIds: string[]
-        }
+  data: {
+    type: 'playlists'
+    attributes: {
+      title: string
+      description: string
+      tagIds: string[]
     }
+  }
 }
 
 export type CreatePlaylistFormValues = {
-    title: string
-    description: string
+  title: string
+  description: string
 }
 // ✅ Добавляем тип для аргументов мутации
 export type UpdatePlaylistMutationArgs = {
-    playlistId: string
-    body: UpdatePlaylistArgs
+  playlistId: string
+  body: UpdatePlaylistArgs
 }

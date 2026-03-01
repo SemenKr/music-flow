@@ -1,46 +1,46 @@
 .state {
-    position: relative;
-    z-index: 1;
-    padding: 16px 18px;
-    border-radius: 12px;
-    margin: 24px 0;
-    background: rgba(9, 12, 20, 0.6);
-    border: 1px solid var(--card-border);
+  position: relative;
+  z-index: 1;
+  padding: 16px 18px;
+  border-radius: 12px;
+  margin: 24px 0;
+  background: rgba(9, 12, 20, 0.6);
+  border: 1px solid var(--card-border);
 }
 
 .grid {
-    position: relative;
-    z-index: 1;
+  position: relative;
+  z-index: 1;
 
-    display: grid;
+  display: grid;
 
-    /* Минимальная ширина карточки 240px, дальше заполняем доступное место */
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    align-items: stretch;
-    gap: 24px;
+  /* Минимальная ширина карточки 240px, дальше заполняем доступное место */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  align-items: stretch;
+  gap: 24px;
 
-    /* Ограничиваем ширину контейнера */
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 16px;
+  /* Ограничиваем ширину контейнера */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
 .formCard {
-    display: flex;
-    width: 100%;
-    max-width: 320px;
-    justify-self: center;
-    min-width: 0;
+  display: flex;
+  width: 100%;
+  max-width: 320px;
+  justify-self: center;
+  min-width: 0;
 }
 
 .formCard > * {
-    width: 100%;
+  width: 100%;
 }
 
 .empty {
-    margin: 0;
-    font-size: 18px;
-    color: var(--page-muted);
-    text-align: center;
-    grid-column: 1 / -1;
+  margin: 0;
+  font-size: 18px;
+  color: var(--page-muted);
+  text-align: center;
+  grid-column: 1 / -1;
 }

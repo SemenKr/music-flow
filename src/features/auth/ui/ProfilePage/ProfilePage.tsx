@@ -1,11 +1,11 @@
-import {useGetMeQuery} from '@/features/auth/api/authApi';
+import { useGetMeQuery } from '@/features/auth/api/authApi'
 
 export const ProfilePage = () => {
-    const { data } = useGetMeQuery()
+  const { data } = useGetMeQuery()
 
-    return (
-        <div>
-            <h1>{data?.login} page</h1>
-        </div>
-    )
+  return (
+    <div>
+      <h1>{data?.login} page</h1>
+    </div>
+  )
 }

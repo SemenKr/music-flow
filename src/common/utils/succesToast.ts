@@ -1,5 +1,5 @@
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify'
 
 export const successToast = (message: string) => {
-    toast(message, { theme: 'colored', type: 'success' })
+  toast(message, { theme: 'colored', type: 'success' })
 }
