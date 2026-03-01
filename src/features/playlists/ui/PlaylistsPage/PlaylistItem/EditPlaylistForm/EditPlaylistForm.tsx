@@ -22,7 +22,7 @@ export const EditPlaylistForm = ({ playlist, onCancel }: Props) => {
     },
   })
 
-  const onSubmit: SubmitHandler<UpdatePlaylistFormValues> = (data) => {
+  const onSubmit: SubmitHandler<UpdatePlaylistFormValues> = data => {
     updatePlaylist({
       playlistId: playlist.id,
       body: {
@@ -31,7 +31,7 @@ export const EditPlaylistForm = ({ playlist, onCancel }: Props) => {
           attributes: {
             title: data.title,
             description: data.description,
-            tagIds: playlist.attributes.tags.map((t) => t.id),
+            tagIds: playlist.attributes.tags.map(t => t.id),
           },
         },
       },

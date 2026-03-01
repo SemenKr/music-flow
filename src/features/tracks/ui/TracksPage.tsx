@@ -10,7 +10,7 @@ export const TracksPage = () => {
 
   const { observerRef } = useInfiniteScroll({ hasNextPage, isFetching, fetchNextPage })
 
-  const pages = data?.pages.flatMap((page) => page.data) || []
+  const pages = data?.pages.flatMap(page => page.data) || []
 
   return (
     <section className={s.page}>

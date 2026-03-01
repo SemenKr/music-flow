@@ -2,7 +2,7 @@ import { baseApi } from '@/app/api/baseApi'
 import type { FetchTracksResponse } from '@/features/tracks/api/tracksApi.types'
 
 export const tracksApi = baseApi.injectEndpoints({
-  endpoints: (build) => ({
+  endpoints: build => ({
     fetchTracks: build.infiniteQuery<
       FetchTracksResponse, // 📦 Тип ответа от сервера
       void, // 📥 Тип аргументов запроса (в данном случае аргументов нет)
@@ -11,7 +11,7 @@ export const tracksApi = baseApi.injectEndpoints({
       infiniteQueryOptions: {
         initialPageParam: undefined, // 🚀 Начинаем без курсора (первая страница)
 
-        getNextPageParam: (lastPage) => {
+        getNextPageParam: lastPage => {
           // ➡️ Берём nextCursor из meta ответа
           // Если курсора нет — возвращаем undefined (пагинация заканчивается)
           return lastPage.meta.nextCursor || undefined

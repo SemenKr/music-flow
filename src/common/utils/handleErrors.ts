@@ -9,8 +9,7 @@ export const handleErrors = (error: FetchBaseQueryError) => {
   if (error) {
     // 🧭 Обрабатываем ошибку в зависимости от её статуса
     switch (error.status) {
-
-        // 🌐 Ошибки сети, тайм-аута или парсинга ответа
+      // 🌐 Ошибки сети, тайм-аута или парсинга ответа
       case 'FETCH_ERROR':
       case 'PARSING_ERROR':
       case 'CUSTOM_ERROR':
@@ -19,7 +18,7 @@ export const handleErrors = (error: FetchBaseQueryError) => {
         errorToast(error.error)
         break
 
-        // ❌ Ошибки запроса (например, валидация или запрет доступа)
+      // ❌ Ошибки запроса (например, валидация или запрет доступа)
       case 400:
       case 403:
         // Если сервер вернул массив ошибок с полем detail
@@ -32,7 +31,7 @@ export const handleErrors = (error: FetchBaseQueryError) => {
         }
         break
 
-        // 🔍 Ресурс не найден
+      // 🔍 Ресурс не найден
       case 404:
         // Проверяем наличие свойства "error" в ответе
         if (isErrorWithProperty(error.data, 'error')) {
@@ -42,7 +41,7 @@ export const handleErrors = (error: FetchBaseQueryError) => {
         }
         break
 
-        // 🔐 Не авторизован или превышен лимит запросов
+      // 🔐 Не авторизован или превышен лимит запросов
       case 401:
       case 429:
         // Проверяем наличие свойства "message"

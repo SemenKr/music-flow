@@ -8,7 +8,7 @@ type TracksListProps = {
 export const TracksList = ({ tracks }: TracksListProps) => {
   return (
     <div className={s.list}>
-      {tracks.map((track) => {
+      {tracks.map(track => {
         const { title, user, attachments } = track.attributes
 
         return (

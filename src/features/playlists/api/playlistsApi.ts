@@ -14,11 +14,11 @@ import type {
 // для взаимодействия с внешними `API` и управления состоянием приложения
 export const playlistsApi = baseApi.injectEndpoints({
   // 🎯 Эндпоинты - описание всех методов работы с API
-  endpoints: (build) => ({
+  endpoints: build => ({
     // 📋 Получение списка всех плейлистов
     // Типизация: <возвращаемый тип, тип аргументов запроса>
     fetchPlaylists: build.query<PlaylistsResponse, FetchPlaylistsArgs>({
-      query: (params) => ({
+      query: params => ({
         method: 'get',
         url: `playlists`,
         params,
@@ -29,7 +29,7 @@ export const playlistsApi = baseApi.injectEndpoints({
 
     // ➕ Создание нового плейлиста
     createPlaylist: build.mutation<{ data: PlaylistData }, CreatePlaylistArgs>({
-      query: (body) => ({
+      query: body => ({
         method: 'post',
         url: `playlists`,
         body,
@@ -40,7 +40,7 @@ export const playlistsApi = baseApi.injectEndpoints({
 
     // 🗑️ Удаление плейлиста по ID
     deletePlaylist: build.mutation<void, string>({
-      query: (playlistId) => ({
+      query: playlistId => ({
         method: 'delete',
         url: `playlists/${playlistId}`,
       }),

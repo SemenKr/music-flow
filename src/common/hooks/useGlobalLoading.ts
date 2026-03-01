@@ -27,13 +27,13 @@ export const useGlobalLoading = () => {
      * 1. Берём только pending
      * 2. Игнорируем исключённые эндпоинты
      */
-    const hasActiveQueries = queries.some((query) => {
+    const hasActiveQueries = queries.some(query => {
       if (query?.status !== 'pending') return false
 
       // Если эндпоинт в исключениях —
       // показываем лоадер только если уже были успешные запросы
       if (excludedEndpoints.includes(query.endpointName)) {
-        const completedQueries = queries.filter((q) => q?.status === 'fulfilled')
+        const completedQueries = queries.filter(q => q?.status === 'fulfilled')
         return completedQueries.length > 0
       }
 
@@ -44,7 +44,7 @@ export const useGlobalLoading = () => {
      * 🔄 Проверяем mutations:
      * Любая pending-мутация включает лоадер
      */
-    const hasActiveMutations = mutations.some((mutation) => mutation?.status === 'pending')
+    const hasActiveMutations = mutations.some(mutation => mutation?.status === 'pending')
 
     // 🚦 Если есть активные запросы или мутации — включаем глобальный лоадер
     return hasActiveQueries || hasActiveMutations

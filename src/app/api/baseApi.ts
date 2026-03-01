@@ -24,7 +24,7 @@ export const baseApi = createApi({
       },
 
       // 🔐 Подготовка заголовков перед каждым запросом
-      prepareHeaders: (headers) => {
+      prepareHeaders: headers => {
         // Добавляем Bearer-токен авторизации
         headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
         return headers

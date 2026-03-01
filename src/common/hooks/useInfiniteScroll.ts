@@ -28,7 +28,7 @@ export const useInfiniteScroll = ({
   useEffect(() => {
     // 👁 IntersectionObserver отслеживает появление элемента во viewport
     const observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         // entries — массив отслеживаемых элементов (обычно один)
         if (entries.length > 0 && entries[0].isIntersecting) {
           loadMoreHandler()

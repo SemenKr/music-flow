@@ -21,7 +21,7 @@ export const store = configureStore({
    * - управление статусами (pending / fulfilled / rejected)
    * - polling и другие lifecycle-события
    */
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware),
 })
 
 /**

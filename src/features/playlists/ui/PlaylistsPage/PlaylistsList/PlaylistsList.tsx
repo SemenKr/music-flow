@@ -22,7 +22,7 @@ export const PlaylistsList = ({ playlists, isPlaylistsLoading }: Props) => {
         <CreatePlaylistForm />
       </div>
       {!playlists.length && <h2 className={s.empty}>Playlists not found</h2>}
-      {playlists.map((playlist) => (
+      {playlists.map(playlist => (
         <PlaylistItem
           key={playlist.id}
           playlist={playlist}

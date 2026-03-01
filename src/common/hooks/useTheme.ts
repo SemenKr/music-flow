@@ -29,7 +29,7 @@ const getStoredPreference = (): ThemePreference => {
 export const useTheme = () => {
   const [preference, setPreference] = useState<ThemePreference>(() => getStoredPreference())
   const systemTheme = useSyncExternalStore(
-    (callback) => {
+    callback => {
       const media = window.matchMedia('(prefers-color-scheme: dark)')
       media.addEventListener('change', callback)
       return () => media.removeEventListener('change', callback)

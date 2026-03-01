@@ -23,7 +23,7 @@ export const Header = ({ showProgress }: Props) => {
       <div className={s.container}>
         <nav className={s.nav}>
           <ul className={s.list}>
-            {navItems.map((item) => (
+            {navItems.map(item => (
               <li key={item.to}>
                 <NavLink
                   to={item.to}

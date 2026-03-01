@@ -20,10 +20,10 @@ export const PlaylistCover = ({ playlist }: Props) => {
     deleteCover({ playlistId: playlist.id })
   }
 
-  const originalCover = playlist.attributes.images.main?.find((img) => img.type === 'original')
+  const originalCover = playlist.attributes.images.main?.find(img => img.type === 'original')
 
-  const mediumCover = playlist.attributes.images.main?.find((img) => img.type === 'medium')
-  const thumbnailCover = playlist.attributes.images.main?.find((img) => img.type === 'thumbnail')
+  const mediumCover = playlist.attributes.images.main?.find(img => img.type === 'medium')
+  const thumbnailCover = playlist.attributes.images.main?.find(img => img.type === 'thumbnail')
   const src = mediumCover?.url ?? thumbnailCover?.url ?? originalCover?.url ?? defaultCover
 
   const uploadCoverHandler = (event: ChangeEvent<HTMLInputElement>) => {

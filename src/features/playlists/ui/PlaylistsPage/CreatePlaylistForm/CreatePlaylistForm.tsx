@@ -7,7 +7,7 @@ export const CreatePlaylistForm = () => {
   const { register, handleSubmit, reset } = useForm<CreatePlaylistFormValues>()
   const [createPlaylist, { isLoading }] = useCreatePlaylistMutation()
 
-  const onSubmit: SubmitHandler<CreatePlaylistFormValues> = (data) => {
+  const onSubmit: SubmitHandler<CreatePlaylistFormValues> = data => {
     createPlaylist({
       data: {
         type: 'playlists',
@@ -18,7 +18,7 @@ export const CreatePlaylistForm = () => {
       .then(() => {
         reset()
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Failed to create playlist:', error)
         // Можно показать toast с ошибкой
       })

@@ -15,9 +15,9 @@ export const PaginationMeta = ({ pageSize, onPageSizeChange }: Props) => {
         <select
           className={s.pageSizeSelect}
           value={pageSize}
-          onChange={(e) => onPageSizeChange(Number(e.target.value))}
+          onChange={e => onPageSizeChange(Number(e.target.value))}
         >
-          {PAGE_SIZE_OPTIONS.map((size) => (
+          {PAGE_SIZE_OPTIONS.map(size => (
             <option value={size} key={size}>
               {size}
             </option>
