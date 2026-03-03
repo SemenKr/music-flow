@@ -1,7 +1,8 @@
 import { LinearProgress } from '@/common/components'
 import { useTheme } from '@/common/hooks/useTheme'
 import { Path } from '@/common/routing'
-import { useGetMeQuery } from '@/features/auth/api/authApi'
+import { useGetMeQuery, useLogoutMutation } from '@/features/auth/api/authApi'
+import { AuthActionButton } from '@/features/auth/ui/AuthActionButton/AuthActionButton'
 import { Login } from '@/features/auth/ui/Login/Login'
 import { NavLink } from 'react-router'
 import s from './Header.module.css'
@@ -20,6 +21,10 @@ const navItems = [
 export const Header = ({ showProgress }: Props) => {
   const { preference, resolvedTheme, toggleTheme } = useTheme()
   const { data } = useGetMeQuery()
+  const [logout] = useLogoutMutation()
+
+  const logoutHandler = () => logout()
+
   return (
     <header className={s.header}>
       <div className={s.container}>
@@ -38,6 +43,14 @@ export const Header = ({ showProgress }: Props) => {
           </ul>
           <div className={s.actions}>
             {data && data.login && <span className={s.userName}>{data.login}</span>}
+            {data && (
+              <AuthActionButton
+                label="logout"
+                ariaLabel="Log out"
+                variant="logout"
+                onClick={logoutHandler}
+              />
+            )}
             {!data && <Login />}
             <button
               type="button"

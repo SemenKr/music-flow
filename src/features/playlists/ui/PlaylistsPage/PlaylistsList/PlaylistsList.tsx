@@ -29,7 +29,6 @@ export const PlaylistsList = ({ playlists, isPlaylistsLoading }: Props) => {
           isEditing={editingPlaylistId === playlist.id}
           onEdit={() => setEditingPlaylistId(playlist.id)}
           onCancelEdit={() => setEditingPlaylistId(null)}
-
         />
       ))}
     </div>

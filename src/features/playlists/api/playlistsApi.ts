@@ -8,7 +8,7 @@ import type {
   PlaylistsResponse,
   UpdatePlaylistArgs,
 } from '@/features/playlists/api/playlistsApi.types'
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify'
 
 // 🎵 API для работы с плейлистами
 // `createApi` - функция из `RTK Query`, позволяющая создать объект `API`
@@ -49,15 +49,11 @@ export const playlistsApi = baseApi.injectEndpoints({
         const args = playlistsApi.util.selectCachedArgsForQuery(getState(), 'fetchPlaylists')
 
         const patchResults = args.map(arg =>
-            dispatch(
-                playlistsApi.util.updateQueryData(
-                    'fetchPlaylists',
-                    arg,
-                    draft => {
-                      draft.data = draft.data.filter(p => p.id !== playlistId)
-                    }
-                )
-            )
+          dispatch(
+            playlistsApi.util.updateQueryData('fetchPlaylists', arg, draft => {
+              draft.data = draft.data.filter(p => p.id !== playlistId)
+            }),
+          ),
         )
 
         try {
@@ -77,41 +73,41 @@ export const playlistsApi = baseApi.injectEndpoints({
 
       // ⚡ Запускается СРАЗУ при вызове мутации — до ответа сервера
       async onQueryStarted({ playlistId, body }, { dispatch, queryFulfilled, getState }) {
-
         // 🗂️ Берём все аргументы, с которыми когда-либо вызывался fetchPlaylists
         // Нужно, т.к. один и тот же список мог загружаться с разными параметрами (страница, фильтр)
         const args = playlistsApi.util.selectCachedArgsForQuery(getState(), 'fetchPlaylists')
 
         // 🔁 Патчим каждый закешированный вариант
         const patchResults = args.map(arg =>
-            dispatch(
-                // ✏️ updateQueryData — напрямую изменяет кеш RTK Query (через Immer, мутации разрешены)
-                playlistsApi.util.updateQueryData(
-                    'fetchPlaylists',
-                    arg, // аргументы конкретного кеша
-                    (state) => {
-                      // 🔍 Ищем нужный плейлист в кеше
-                      const playlist = state.data.find(p => p.id === playlistId)
-                      if (playlist) {
-                        // 💾 Применяем новые данные — UI обновится мгновенно, не ждём сервер
-                        Object.assign(playlist.attributes, body)
-                      }
-                    }
-                )
-            )
+          dispatch(
+            // ✏️ updateQueryData — напрямую изменяет кеш RTK Query (через Immer, мутации разрешены)
+            playlistsApi.util.updateQueryData(
+              'fetchPlaylists',
+              arg, // аргументы конкретного кеша
+              state => {
+                // 🔍 Ищем нужный плейлист в кеше
+                const playlist = state.data.find(p => p.id === playlistId)
+                if (playlist) {
+                  // 💾 Применяем новые данные — UI обновится мгновенно, не ждём сервер
+                  Object.assign(playlist.attributes, body)
+                }
+              },
+            ),
+          ),
         )
         try {
           await queryFulfilled // ⏳ Ждём реальный ответ сервера
           // ✅ Успех — оптимистичные изменения остаются
-        } catch(error: unknown) {
+        } catch (error: unknown) {
           // ❌ Ошибка — откатываем все изменения, UI вернётся к исходному состоянию
           patchResults.forEach(patchResult => {
             patchResult.undo() // ↩️ Откат
           })
-          const message = (error as { error?: { data?: { message?: string } } })?.error?.data?.message
+          const message = (error as { error?: { data?: { message?: string } } })?.error?.data
+            ?.message
           toast.error(message ?? 'Не удалось обновить плейлист')
         }
-      }
+      },
     }),
     uploadPlaylistCover: build.mutation<Images, { playlistId: string; file: File }>({
       query: ({ playlistId, file }) => {

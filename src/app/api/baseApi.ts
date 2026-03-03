@@ -1,4 +1,4 @@
-import {AUTH_KEYS} from '@/common/constants/constants';
+import { AUTH_KEYS } from '@/common/constants/constants'
 import { handleErrors } from '@/common/utils'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
