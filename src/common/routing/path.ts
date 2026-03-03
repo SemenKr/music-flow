@@ -3,5 +3,6 @@ export const Path = {
   Playlists: '/playlists',
   Tracks: '/tracks',
   Profile: '/profile',
+  OAuthRedirect: '/oauth/callback',
   NotFound: '*',
 } as const

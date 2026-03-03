@@ -1,6 +1,8 @@
 import { LinearProgress } from '@/common/components'
 import { useTheme } from '@/common/hooks/useTheme'
 import { Path } from '@/common/routing'
+import { useGetMeQuery } from '@/features/auth/api/authApi'
+import { Login } from '@/features/auth/ui/Login/Login'
 import { NavLink } from 'react-router'
 import s from './Header.module.css'
 
@@ -17,7 +19,7 @@ const navItems = [
 
 export const Header = ({ showProgress }: Props) => {
   const { preference, resolvedTheme, toggleTheme } = useTheme()
-
+  const { data } = useGetMeQuery()
   return (
     <header className={s.header}>
       <div className={s.container}>
@@ -34,25 +36,29 @@ export const Header = ({ showProgress }: Props) => {
               </li>
             ))}
           </ul>
-          <button
-            type="button"
-            className={s.themeToggle}
-            onClick={toggleTheme}
-            aria-label="Toggle color theme"
-            aria-pressed={resolvedTheme === 'dark'}
-            data-theme={resolvedTheme}
-            title={
-              preference === 'system'
-                ? `Theme: ${resolvedTheme} (system)`
-                : `Theme: ${resolvedTheme}`
-            }
-          >
-            <span className={s.toggleTrack} aria-hidden="true">
-              <span className={s.toggleThumb} />
-              <span className={s.toggleIcon} data-icon="sun" />
-              <span className={s.toggleIcon} data-icon="moon" />
-            </span>
-          </button>
+          <div className={s.actions}>
+            {data && data.login && <span className={s.userName}>{data.login}</span>}
+            {!data && <Login />}
+            <button
+              type="button"
+              className={s.themeToggle}
+              onClick={toggleTheme}
+              aria-label="Toggle color theme"
+              aria-pressed={resolvedTheme === 'dark'}
+              data-theme={resolvedTheme}
+              title={
+                preference === 'system'
+                  ? `Theme: ${resolvedTheme} (system)`
+                  : `Theme: ${resolvedTheme}`
+              }
+            >
+              <span className={s.toggleTrack} aria-hidden="true">
+                <span className={s.toggleThumb} />
+                <span className={s.toggleIcon} data-icon="sun" />
+                <span className={s.toggleIcon} data-icon="moon" />
+              </span>
+            </button>
+          </div>
         </nav>
       </div>
 
