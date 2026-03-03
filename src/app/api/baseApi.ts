@@ -1,54 +1,18 @@
-import { AUTH_KEYS } from '@/common/constants/constants'
-import { handleErrors } from '@/common/utils'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { baseQueryWithReauth } from '@/app/api/baseQueryWithReauth.ts'
+import { createApi } from '@reduxjs/toolkit/query/react'
 
+// 🌐 Базовый API-инстанс RTK Query
+// Используется как основа для всех feature-эндпоинтов
 export const baseApi = createApi({
-  // 📁 Ключ в store, под которым RTK Query сохранит состояние этого API
+  // 🏷 Уникальный ключ в Redux store
   reducerPath: 'baseApi',
 
-  // 🏷️ Список тегов для инвалидации кэша
-  // Используются в providesTags / invalidatesTags
-  tagTypes: ['Playlists', 'Auth'],
+  // 🏷 Типы тегов для автоматической инвалидации кэша
+  tagTypes: ['Playlist', 'Auth'],
 
-  // ⏳ Время хранения данных в кэше (в секундах)
-  // 86400 = 24 часа после того, как подписчиков на запрос больше нет
-  keepUnusedDataFor: 86400,
-
-  // 🌐 Базовый обработчик всех HTTP-запросов
-  baseQuery: async (args, api, extraOptions) => {
-    // 🔧 Конфигурация fetchBaseQuery
-    const result = await fetchBaseQuery({
-      baseUrl: import.meta.env.VITE_BASE_URL, // 🌍 Базовый URL API
-
-      headers: {
-        'API-KEY': import.meta.env.VITE_API_KEY, // 🔑 Статический API-ключ
-      },
-
-      // 🔐 Подготовка заголовков перед каждым запросом
-      prepareHeaders: headers => {
-        // Добавляем Bearer-токен авторизации
-        const accessToken = localStorage.getItem(AUTH_KEYS.accessToken)
-        if (accessToken) {
-          headers.set('Authorization', `Bearer ${accessToken}`)
-        }
-        return headers
-      },
-    })(args, api, extraOptions)
-
-    // ❗ Глобальная обработка ошибок
-    if (result.error) {
-      handleErrors(result.error)
-    }
-
-    return result
-  },
-
-  // 🔄 Автоматический рефетч при возврате фокуса на вкладку
-  // refetchOnFocus: true,
-
-  // 🌐 Автоматический рефетч при восстановлении соединения
-  // refetchOnReconnect: true,
-
-  // 📦 Эндпоинты подключаются через injectEndpoints
+  // 📦 Здесь будут подключаться конкретные endpoints через injectEndpoints
   endpoints: () => ({}),
+
+  // 🔐 Кастомный baseQuery с авто-обновлением accessToken
+  baseQuery: baseQueryWithReauth,
 })
