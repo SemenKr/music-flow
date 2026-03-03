@@ -1,11 +1,12 @@
 import { baseApi } from '@/app/api/baseApi'
-import {AUTH_KEYS} from '@/common/constants/constants';
+import {AUTH_KEYS} from '@/common/constants';
 import type {LoginArgs, LoginResponse, MeResponse} from '@/features/auth/api/authApi.types'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: build => ({
     getMe: build.query<MeResponse, void>({
       query: () => `auth/me`,
+      providesTags: ['Auth']
     }),
     login: build.mutation<LoginResponse, LoginArgs>({
       query: (payload) => {
