@@ -11,9 +11,18 @@ type Props = {
   isEditing: boolean
   onEdit: () => void
   onCancelEdit: () => void
+  currentUserId?: string
 }
 
-export const PlaylistItem = ({ playlist, isEditing, onEdit, onCancelEdit }: Props) => {
+export const PlaylistItem = ({
+  playlist,
+  isEditing,
+  onEdit,
+  onCancelEdit,
+  currentUserId,
+}: Props) => {
+  const isOwner = !!currentUserId && playlist.attributes.user?.id === currentUserId
+
   return (
     <article className={s.card}>
       <PlaylistCover playlist={playlist} />
@@ -24,7 +33,7 @@ export const PlaylistItem = ({ playlist, isEditing, onEdit, onCancelEdit }: Prop
           <>
             <PlaylistSummary playlist={playlist} />
             <PlaylistDetails playlist={playlist} />
-            <PlaylistActions playlistId={playlist.id} onEdit={onEdit} />
+            {isOwner && <PlaylistActions playlistId={playlist.id} onEdit={onEdit} />}
           </>
         )}
       </div>

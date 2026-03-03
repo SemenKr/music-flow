@@ -7,9 +7,10 @@ import s from './PlaylistsList.module.css'
 type Props = {
   playlists: PlaylistData[]
   isPlaylistsLoading: boolean
+  currentUserId?: string
 }
 
-export const PlaylistsList = ({ playlists, isPlaylistsLoading }: Props) => {
+export const PlaylistsList = ({ playlists, isPlaylistsLoading, currentUserId }: Props) => {
   const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null)
 
   if (isPlaylistsLoading) {
@@ -29,6 +30,7 @@ export const PlaylistsList = ({ playlists, isPlaylistsLoading }: Props) => {
           isEditing={editingPlaylistId === playlist.id}
           onEdit={() => setEditingPlaylistId(playlist.id)}
           onCancelEdit={() => setEditingPlaylistId(null)}
+          currentUserId={currentUserId}
         />
       ))}
     </div>

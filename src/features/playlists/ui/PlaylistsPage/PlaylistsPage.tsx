@@ -1,5 +1,6 @@
 import { Pagination } from '@/common/components'
 import { useDebounceValue } from '@/common/hooks'
+import { useGetMeQuery } from '@/features/auth/api/authApi'
 import { useFetchPlaylistsQuery } from '@/features/playlists/api/playlistsApi'
 import { PlaylistsPageSkeleton } from '@/features/playlists/ui/PlaylistsPage/PlaylistsPageSkeleton/PlaylistsPageSkeleton'
 import { useState } from 'react'
@@ -12,6 +13,7 @@ export const PlaylistsPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(5)
   const debounceSearch = useDebounceValue(search)
+  const { data: me } = useGetMeQuery()
 
   const { data, isLoading } = useFetchPlaylistsQuery(
     {
@@ -49,7 +51,11 @@ export const PlaylistsPage = () => {
         totalCount={totalCount}
         isLoading={isLoading}
       />
-      <PlaylistsList playlists={data?.data || []} isPlaylistsLoading={isLoading} />
+      <PlaylistsList
+        playlists={data?.data || []}
+        isPlaylistsLoading={isLoading}
+        currentUserId={me?.userId}
+      />
       <Pagination
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
