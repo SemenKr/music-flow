@@ -1,4 +1,5 @@
 import { baseApi } from '@/app/api/baseApi'
+import {AUTH_KEYS} from '@/common/constants/constants';
 import type {LoginArgs, LoginResponse, MeResponse} from '@/features/auth/api/authApi.types'
 
 export const authApi = baseApi.injectEndpoints({
@@ -13,7 +14,14 @@ export const authApi = baseApi.injectEndpoints({
           url: 'auth/login',
           body:{...payload, accessTokenTTL: '3m'}
         }
-      }
+      },
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled
+        localStorage.setItem(AUTH_KEYS.accessToken, data.accessToken)
+        localStorage.setItem(AUTH_KEYS.refreshToken, data.refreshToken)
+        // Invalidate after saving tokens
+        dispatch(authApi.util.invalidateTags(['Auth']))
+      },
     })
   }),
 })

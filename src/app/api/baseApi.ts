@@ -1,3 +1,4 @@
+import {AUTH_KEYS} from '@/common/constants/constants';
 import { handleErrors } from '@/common/utils'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -7,7 +8,7 @@ export const baseApi = createApi({
 
   // 🏷️ Список тегов для инвалидации кэша
   // Используются в providesTags / invalidatesTags
-  tagTypes: ['Playlists'],
+  tagTypes: ['Playlists', 'Auth'],
 
   // ⏳ Время хранения данных в кэше (в секундах)
   // 86400 = 24 часа после того, как подписчиков на запрос больше нет
@@ -26,7 +27,10 @@ export const baseApi = createApi({
       // 🔐 Подготовка заголовков перед каждым запросом
       prepareHeaders: headers => {
         // Добавляем Bearer-токен авторизации
-        headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
+        const accessToken = localStorage.getItem(AUTH_KEYS.accessToken)
+        if (accessToken) {
+          headers.set('Authorization', `Bearer ${accessToken}`)
+        }
         return headers
       },
     })(args, api, extraOptions)

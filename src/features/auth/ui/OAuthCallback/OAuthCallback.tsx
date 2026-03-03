@@ -8,7 +8,6 @@ export const OAuthCallback = () => {
     useEffect(() => {
         // Создаем объект URL на основе текущего адреса страницы
         const url = new URL(window.location.href)
-
         // Извлекаем параметр "code" из query-строки (?code=...)
         const code = url.searchParams.get('code')
 
