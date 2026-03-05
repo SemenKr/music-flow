@@ -39,9 +39,12 @@ export const playlistsApi = baseApi.injectEndpoints({
                   const index = state.data.findIndex((playlist) => playlist.id === playlistId)
 
                   if (index !== -1) {
+                    const { title, description } = body.data.attributes
+
                     state.data[index].attributes = {
                       ...state.data[index].attributes,
-                      ...body,
+                      title,
+                      description,
                     }
                   }
                 }),
