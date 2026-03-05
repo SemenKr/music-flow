@@ -8,6 +8,7 @@ import type {
   UpdatePlaylistArgs,
 } from '@/features/playlists/api/playlistsApi.types.ts'
 
+
 export const playlistsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     fetchPlaylists: build.query<PlaylistsResponse, FetchPlaylistsArgs>({
@@ -23,43 +24,37 @@ export const playlistsApi = baseApi.injectEndpoints({
       invalidatesTags: ['Playlist'],
     }),
     updatePlaylist: build.mutation<void, { playlistId: string; body: UpdatePlaylistArgs }>({
-      query: ({ playlistId, body }) => {
-        return { method: 'put', url: `playlists/${playlistId}`, body }
-      },
+      query: ({ playlistId, body }) => ({
+        url: `playlists/${playlistId}`,
+        method: 'put',
+        body,
+      }),
+
       onQueryStarted: async ({ playlistId, body }, { queryFulfilled, dispatch, getState }) => {
         const args = playlistsApi.util.selectCachedArgsForQuery(getState(), 'fetchPlaylists')
-        const patchCollections: any[] = []
 
-        args.forEach((arg) => {
-          patchCollections.push(
-              dispatch(
-                  playlistsApi.util.updateQueryData(
-                      'fetchPlaylists',
-                      {
-                        pageNumber: arg.pageNumber,
-                        pageSize: arg.pageSize,
-                        search: arg.search,
-                      },
-                      (state) => {
-                        const index = state.data.findIndex((playlist) => playlist.id === playlistId)
-                        if (index !== -1) {
-                          state.data[index].attributes = { ...state.data[index].attributes, ...body }
-                        }
-                      },
-                  ),
-              ),
-          )
-        })
+        const patchCollections = args.map((arg) =>
+            dispatch(
+                playlistsApi.util.updateQueryData('fetchPlaylists', arg, (state) => {
+                  const index = state.data.findIndex((playlist) => playlist.id === playlistId)
+
+                  if (index !== -1) {
+                    state.data[index].attributes = {
+                      ...state.data[index].attributes,
+                      ...body,
+                    }
+                  }
+                }),
+            ),
+        )
 
         try {
           await queryFulfilled
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (e) {
-          patchCollections.forEach((patchCollection) => {
-            patchCollection.undo()
-          })
+        } catch {
+          patchCollections.forEach((patch) => patch.undo())
         }
       },
+
       invalidatesTags: ['Playlist'],
     }),
     uploadPlaylistCover: build.mutation<Images, { playlistId: string; file: File }>({
