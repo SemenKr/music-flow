@@ -1,5 +1,4 @@
-// Во избежание ошибок импорт должен быть из `@reduxjs/toolkit/query/react`
-import { baseApi } from '@/app/api/baseApi'
+import { baseApi } from '@/app/api/baseApi.ts'
 import type { Images } from '@/common/types'
 import type {
   CreatePlaylistArgs,
@@ -7,136 +6,77 @@ import type {
   PlaylistData,
   PlaylistsResponse,
   UpdatePlaylistArgs,
-} from '@/features/playlists/api/playlistsApi.types'
-import { toast } from 'react-toastify'
+} from '@/features/playlists/api/playlistsApi.types.ts'
 
-// 🎵 API для работы с плейлистами
-// `createApi` - функция из `RTK Query`, позволяющая создать объект `API`
-// для взаимодействия с внешними `API` и управления состоянием приложения
 export const playlistsApi = baseApi.injectEndpoints({
-  // 🎯 Эндпоинты - описание всех методов работы с API
-  endpoints: build => ({
-    // 📋 Получение списка всех плейлистов
-    // Типизация: <возвращаемый тип, тип аргументов запроса>
+  endpoints: (build) => ({
     fetchPlaylists: build.query<PlaylistsResponse, FetchPlaylistsArgs>({
-      query: params => ({
-        method: 'get',
-        url: `playlists`,
-        params,
-      }),
-      // ✅ Помечаем, что этот запрос предоставляет данные с тегом "Playlists"
-      providesTags: ['Playlists'],
+      query: (params) => ({ url: 'playlists', params }),
+      providesTags: ['Playlist'],
     }),
-
-    // ➕ Создание нового плейлиста
     createPlaylist: build.mutation<{ data: PlaylistData }, CreatePlaylistArgs>({
-      query: body => ({
-        method: 'post',
-        url: `playlists`,
-        body,
-      }),
-      // 🔄 После создания инвалидируем кэш, чтобы обновить список плейлистов
-      invalidatesTags: ['Playlists'],
+      query: (body) => ({ method: 'post', url: 'playlists', body }),
+      invalidatesTags: ['Playlist'],
     }),
-
-    // 🗑️ Удаление плейлиста по ID
     deletePlaylist: build.mutation<void, string>({
-      query: playlistId => ({
-        method: 'delete',
-        url: `playlists/${playlistId}`,
-      }),
-      async onQueryStarted(playlistId, { dispatch, queryFulfilled, getState }) {
+      query: (playlistId) => ({ method: 'delete', url: `playlists/${playlistId}` }),
+      invalidatesTags: ['Playlist'],
+    }),
+    updatePlaylist: build.mutation<void, { playlistId: string; body: UpdatePlaylistArgs }>({
+      query: ({ playlistId, body }) => {
+        return { method: 'put', url: `playlists/${playlistId}`, body }
+      },
+      onQueryStarted: async ({ playlistId, body }, { queryFulfilled, dispatch, getState }) => {
         const args = playlistsApi.util.selectCachedArgsForQuery(getState(), 'fetchPlaylists')
+        const patchCollections: any[] = []
 
-        const patchResults = args.map(arg =>
-          dispatch(
-            playlistsApi.util.updateQueryData('fetchPlaylists', arg, draft => {
-              draft.data = draft.data.filter(p => p.id !== playlistId)
-            }),
-          ),
-        )
+        args.forEach((arg) => {
+          patchCollections.push(
+              dispatch(
+                  playlistsApi.util.updateQueryData(
+                      'fetchPlaylists',
+                      {
+                        pageNumber: arg.pageNumber,
+                        pageSize: arg.pageSize,
+                        search: arg.search,
+                      },
+                      (state) => {
+                        const index = state.data.findIndex((playlist) => playlist.id === playlistId)
+                        if (index !== -1) {
+                          state.data[index].attributes = { ...state.data[index].attributes, ...body }
+                        }
+                      },
+                  ),
+              ),
+          )
+        })
 
         try {
           await queryFulfilled
-        } catch {
-          patchResults.forEach(p => p.undo())
-        }
-      },
-      // 🔄 После удаления обновляем список
-      invalidatesTags: ['Playlists'],
-    }),
-
-    // ✏️ Обновление существующего плейлиста
-    updatePlaylist: build.mutation<void, { playlistId: string; body: UpdatePlaylistArgs }>({
-      // 📡 Конфигурация запроса: PUT /playlists/:playlistId
-      query: ({ playlistId, body }) => ({ url: `playlists/${playlistId}`, method: 'put', body }),
-
-      // ⚡ Запускается СРАЗУ при вызове мутации — до ответа сервера
-      async onQueryStarted({ playlistId, body }, { dispatch, queryFulfilled, getState }) {
-        // 🗂️ Берём все аргументы, с которыми когда-либо вызывался fetchPlaylists
-        // Нужно, т.к. один и тот же список мог загружаться с разными параметрами (страница, фильтр)
-        const args = playlistsApi.util.selectCachedArgsForQuery(getState(), 'fetchPlaylists')
-
-        // 🔁 Патчим каждый закешированный вариант
-        const patchResults = args.map(arg =>
-          dispatch(
-            // ✏️ updateQueryData — напрямую изменяет кеш RTK Query (через Immer, мутации разрешены)
-            playlistsApi.util.updateQueryData(
-              'fetchPlaylists',
-              arg, // аргументы конкретного кеша
-              state => {
-                // 🔍 Ищем нужный плейлист в кеше
-                const playlist = state.data.find(p => p.id === playlistId)
-                if (playlist) {
-                  // 💾 Применяем новые данные — UI обновится мгновенно, не ждём сервер
-                  Object.assign(playlist.attributes, body)
-                }
-              },
-            ),
-          ),
-        )
-        try {
-          await queryFulfilled // ⏳ Ждём реальный ответ сервера
-          // ✅ Успех — оптимистичные изменения остаются
-        } catch (error: unknown) {
-          // ❌ Ошибка — откатываем все изменения, UI вернётся к исходному состоянию
-          patchResults.forEach(patchResult => {
-            patchResult.undo() // ↩️ Откат
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+          patchCollections.forEach((patchCollection) => {
+            patchCollection.undo()
           })
-          const message = (error as { error?: { data?: { message?: string } } })?.error?.data
-            ?.message
-          toast.error(message ?? 'Не удалось обновить плейлист')
         }
       },
+      invalidatesTags: ['Playlist'],
     }),
     uploadPlaylistCover: build.mutation<Images, { playlistId: string; file: File }>({
       query: ({ playlistId, file }) => {
         const formData = new FormData()
         formData.append('file', file)
-        return {
-          url: `playlists/${playlistId}/images/main`,
-          method: 'post',
-          body: formData,
-        }
+        return { method: 'post', url: `playlists/${playlistId}/images/main`, body: formData }
       },
-      invalidatesTags: ['Playlists'],
+      invalidatesTags: ['Playlist'],
     }),
     deletePlaylistCover: build.mutation<void, { playlistId: string }>({
-      query: ({ playlistId }) => ({
-        url: `playlists/${playlistId}/images/main`,
-        method: 'delete',
-      }),
-      invalidatesTags: ['Playlists'],
+      query: ({ playlistId }) => ({ method: 'delete', url: `playlists/${playlistId}/images/main` }),
+      invalidatesTags: ['Playlist'],
     }),
   }),
 })
 
-// 🪝 Экспортируем автоматически созданные хуки для использования в компонентах
-// RTK Query автоматически создаёт хуки на основе имён эндпоинтов:
-// - fetchPlaylists → useFetchPlaylistsQuery
-// - createPlaylist → useCreatePlaylistMutation
-// - deletePlaylist → useDeletePlaylistMutation
-// - updatePlaylist → useUpdatePlaylistMutation
 export const {
   useFetchPlaylistsQuery,
   useCreatePlaylistMutation,
