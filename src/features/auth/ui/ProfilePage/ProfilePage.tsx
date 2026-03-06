@@ -15,8 +15,11 @@ export const ProfilePage = () => {
   )
   const playlistsCount = playlistsResponse?.meta?.totalCount ?? 0
   const profileTitle = meResponse?.login ?? 'Profile'
+
   if (isLoading || isMeLoading) return <PlaylistsPageSkeleton />
+
   if (!isMeLoading && !meResponse) return <Navigate to={Path.Playlists} />
+
   return (
     <section className={s.page}>
       <header className={s.header}>
