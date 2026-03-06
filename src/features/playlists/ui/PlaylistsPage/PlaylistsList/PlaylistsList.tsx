@@ -1,7 +1,6 @@
-import type { PlaylistData } from '@/features/playlists/api/playlistsApi.types'
-import { useState } from 'react'
-import { CreatePlaylistForm } from '../CreatePlaylistForm/CreatePlaylistForm'
-import { PlaylistItem } from '../PlaylistItem/PlaylistItem'
+import type {PlaylistData} from '@/features/playlists/api/playlistsApi.types'
+import {useState} from 'react'
+import {PlaylistItem} from '../PlaylistItem/PlaylistItem'
 import s from './PlaylistsList.module.css'
 
 type Props = {
@@ -19,9 +18,6 @@ export const PlaylistsList = ({ playlists, isPlaylistsLoading, currentUserId }: 
 
   return (
     <div className={s.grid}>
-      <div className={s.formCard}>
-        <CreatePlaylistForm />
-      </div>
       {!playlists.length && <h2 className={s.empty}>Playlists not found</h2>}
       {playlists.map(playlist => (
         <PlaylistItem
