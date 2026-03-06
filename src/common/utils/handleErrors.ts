@@ -42,7 +42,6 @@ export const handleErrors = (error: FetchBaseQueryError) => {
         break
 
       // 🔐 Не авторизован или превышен лимит запросов
-      case 401:
       case 429:
         // Проверяем наличие свойства "message"
         if (isErrorWithProperty(error.data, 'message')) {
