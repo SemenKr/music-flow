@@ -22,8 +22,8 @@ export const authApi = baseApi.injectEndpoints({
         return {
           method: 'post',
           url: 'auth/login',
-          // Добавляем accessTokenTTL к телу запроса (время жизни токена - 3 минуты)
-          body: { ...payload, accessTokenTTL: '3m' },
+          // Добавляем accessTokenTTL к телу запроса (время жизни токена - 20 минуты)
+          body: { ...payload, accessTokenTTL: '20m' },
         }
       },
       // onQueryStarted: жизненный цикл запроса. Позволяет выполнить код в момент начала

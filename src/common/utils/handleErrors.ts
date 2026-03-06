@@ -20,6 +20,14 @@ export const handleErrors = (error: FetchBaseQueryError) => {
 
       // ❌ Ошибки запроса (например, валидация или запрет доступа)
       case 400:
+        if (isErrorWithDetailArray(error.data)) {
+          const errorMessage = error.data.errors[0].detail
+          if (errorMessage.includes('refresh')) return
+          errorToast(trimToMaxLength(error.data.errors[0].detail))
+        } else {
+          errorToast(JSON.stringify(error.data))
+        }
+        break
       case 403:
         // Если сервер вернул массив ошибок с полем detail
         if (isErrorWithDetailArray(error.data)) {
