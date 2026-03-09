@@ -51,6 +51,6 @@ export const updatePlaylistSchema = z.object({
         }),
     }),
 })
-export const playlistCreateResponceScheme = z.object({
+export const playlistCreateResponseScheme = z.object({
     data: playlistDataSchema
 })

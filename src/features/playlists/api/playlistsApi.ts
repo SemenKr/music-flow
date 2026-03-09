@@ -1,12 +1,12 @@
 import {baseApi} from '@/app/api/baseApi.ts'
-import type {Images} from '@/common/types'
+import {imagesSchema} from '@/common/schemas';
 import {errorToast} from '@/common/utils';
 import type {
+    CreatePlaylistArgs,
     FetchPlaylistsArgs,
-    PlaylistData,
     UpdatePlaylistArgs,
 } from '@/features/playlists/api/playlistsApi.types.ts'
-import {playlistCreateResponceScheme, playlistsResponseSchema} from '@/features/playlists/model/playlists.schemas';
+import {playlistCreateResponseScheme, playlistsResponseSchema} from '@/features/playlists/model/playlists.schemas';
 
 
 export const playlistsApi = baseApi.injectEndpoints({
@@ -27,8 +27,8 @@ export const playlistsApi = baseApi.injectEndpoints({
                     : [{ type: 'Playlist', id: 'LIST' }],
         }),
         createPlaylist: build.mutation({
-            query: (body: PlaylistData) => ({method: 'post', url: 'playlists', body}),
-            responseSchema: playlistCreateResponceScheme,
+            query: (body: CreatePlaylistArgs) => ({method: 'post', url: 'playlists', body}),
+            responseSchema: playlistCreateResponseScheme,
             catchSchemaFailure: err => {
                 errorToast('Zod error. Details in the console', err.issues)
                 return {status: 'CUSTOM_ERROR', error: 'Schema validation failed'}
@@ -88,14 +88,16 @@ export const playlistsApi = baseApi.injectEndpoints({
 
             invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
         }),
-        uploadPlaylistCover: build.mutation<Images, {
-            playlistId: string;
-            file: File
-        }>({
+        uploadPlaylistCover: build.mutation({
             query: ({playlistId, file}) => {
                 const formData = new FormData()
                 formData.append('file', file)
                 return {method: 'post', url: `playlists/${playlistId}/images/main`, body: formData}
+            },
+            responseSchema: imagesSchema,
+            catchSchemaFailure: err => {
+                errorToast('Zod error. Details in the console', err.issues)
+                return { status: 'CUSTOM_ERROR', error: 'Schema validation failed' }
             },
             invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
         }),
