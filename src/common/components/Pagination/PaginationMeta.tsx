@@ -1,6 +1,6 @@
 import s from './PaginationMeta.module.css'
 
-const PAGE_SIZE_OPTIONS = [3, 5, 7, 15, 33]
+const PAGE_SIZE_OPTIONS = [4, 6, 8, 12, 20]
 
 type Props = {
   pageSize: number

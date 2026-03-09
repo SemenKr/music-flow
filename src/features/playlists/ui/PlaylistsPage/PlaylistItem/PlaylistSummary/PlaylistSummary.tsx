@@ -8,7 +8,6 @@ type Props = {
 export const PlaylistSummary = ({ playlist }: Props) => {
   const title = playlist.attributes.title
   const description = playlist.attributes.description
-    console.log(playlist.attributes)
 
   return (
     <>

@@ -13,7 +13,7 @@ export const userSchema = z.object({
 
 export const coverSchema = z.object({
     type: z.literal(['original', 'medium', 'thumbnail']),
-    width: z.int().positive(),
+    width: z.int().positive(), // целые положительные
     height: z.int().positive(),
     fileSize: z.int().positive(),
     url: z.url(),

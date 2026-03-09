@@ -48,11 +48,17 @@ export const CreatePlaylistForm = () => {
         </label>
         <input
           id="playlist-title"
-          className={s.input}
+          className={`${s.input} ${errors.title ? s.inputError : ''}`}
           {...register('title')}
           placeholder="Midnight focus"
+          aria-invalid={Boolean(errors.title)}
+          aria-describedby={errors.title ? 'playlist-title-error' : undefined}
         />
-        {errors.title && <span className={s.error}>{errors.title.message}</span>}
+        {errors.title && (
+          <span className={s.error} id="playlist-title-error">
+            {errors.title.message}
+          </span>
+        )}
       </div>
       <div className={s.field}>
         <label className={s.label} htmlFor="playlist-description">
@@ -60,12 +66,16 @@ export const CreatePlaylistForm = () => {
         </label>
         <input
           id="playlist-description"
-          className={s.input}
+          className={`${s.input} ${errors.description ? s.inputError : ''}`}
           {...register('description')}
           placeholder="Warm synths and slow beats."
+          aria-invalid={Boolean(errors.description)}
+          aria-describedby={errors.description ? 'playlist-description-error' : undefined}
         />
         {errors.description && (
-          <span className={s.error}>{errors.description.message}</span>
+          <span className={s.error} id="playlist-description-error">
+            {errors.description.message}
+          </span>
         )}
       </div>
       <button disabled={isLoading} className={s.submit} type="submit">
