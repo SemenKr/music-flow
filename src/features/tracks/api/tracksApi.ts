@@ -1,11 +1,13 @@
 import { baseApi } from '@/app/api/baseApi'
-import type { FetchTracksResponse } from '@/features/tracks/api/tracksApi.types'
+import {withZodCatch} from '@/common/utils';
+import type {FetchTracksArgs, FetchTracksResponse} from '@/features/tracks/api/tracksApi.types'
+import {fetchTracksResponseSchema} from '@/features/tracks/model/tracks.schemas';
 
 export const tracksApi = baseApi.injectEndpoints({
   endpoints: build => ({
     fetchTracks: build.infiniteQuery<
       FetchTracksResponse, // 📦 Тип ответа от сервера
-      void, // 📥 Тип аргументов запроса (в данном случае аргументов нет)
+        FetchTracksArgs, // 📥 Тип аргументов запроса (в данном случае аргументов нет)
       string | undefined // 🔑 Тип pageParam (курсор для пагинации)
     >({
       infiniteQueryOptions: {
@@ -18,17 +20,17 @@ export const tracksApi = baseApi.injectEndpoints({
         },
       },
 
-      query: ({ pageParam }) => {
+      query: ({ pageParam, queryArg }) => {
         return {
           url: 'playlists/tracks', // 🌐 Endpoint для получения треков
 
           params: {
             cursor: pageParam, // 🔁 Курсор текущей страницы
-            pageSize: 5, // 📄 Количество элементов за запрос
-            paginationType: 'cursor', // 🔄 Тип пагинации — курсорная
+            ...queryArg,
           },
         }
       },
+      ...withZodCatch(fetchTracksResponseSchema),
     }),
   }),
 })

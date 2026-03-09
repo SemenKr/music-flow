@@ -1,6 +1,8 @@
-import { baseApi } from '@/app/api/baseApi'
-import { AUTH_KEYS } from '@/common/constants'
-import type { LoginArgs, LoginResponse, MeResponse } from '@/features/auth/api/authApi.types'
+import {baseApi} from '@/app/api/baseApi'
+import {AUTH_KEYS} from '@/common/constants'
+import {withZodCatch} from '@/common/utils';
+import type {LoginArgs} from '@/features/auth/api/authApi.types'
+import {loginResponseSchema, meResponseSchema} from '@/features/auth/model/auth.schemas';
 
 // Расширяем базовый API (baseApi) новыми эндпоинтами для аутентификации.
 // Это позволяет разбивать логику API на несколько файлов (Code Splitting),
@@ -8,17 +10,18 @@ import type { LoginArgs, LoginResponse, MeResponse } from '@/features/auth/api/a
 export const authApi = baseApi.injectEndpoints({
   endpoints: build => ({
     // Эндпоинт для получения данных текущего пользователя (GET /auth/me)
-    getMe: build.query<MeResponse, void>({
+    getMe: build.query({
       // query: определяет URL и параметры запроса
       query: () => `auth/me`,
       // providesTags: сообщает кэшу, что этот запрос предоставляет данные типа 'Auth'.
       // Если где-то будет вызван invalidateTags(['Auth']), данные этого запроса обновятся.
+      ...withZodCatch(meResponseSchema),
       providesTags: ['Auth'],
     }),
 
     // Эндпоинт для входа в систему (POST /auth/login)
-    login: build.mutation<LoginResponse, LoginArgs>({
-      query: payload => {
+    login: build.mutation({
+      query:  (payload: LoginArgs) => {
         return {
           method: 'post',
           url: 'auth/login',
@@ -26,6 +29,7 @@ export const authApi = baseApi.injectEndpoints({
           body: { ...payload, accessTokenTTL: '20m' },
         }
       },
+      ...withZodCatch(loginResponseSchema),
       // onQueryStarted: жизненный цикл запроса. Позволяет выполнить код в момент начала
       // или завершения (успешного/неуспешного) запроса.
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
