@@ -2,35 +2,42 @@ import {baseApi} from '@/app/api/baseApi.ts'
 import type {Images} from '@/common/types'
 import {errorToast} from '@/common/utils';
 import type {
-    CreatePlaylistArgs,
     FetchPlaylistsArgs,
     PlaylistData,
-    PlaylistsResponse,
     UpdatePlaylistArgs,
 } from '@/features/playlists/api/playlistsApi.types.ts'
-import {playlistsResponseSchema} from '@/features/playlists/model/playlists.schemas';
+import {playlistCreateResponceScheme, playlistsResponseSchema} from '@/features/playlists/model/playlists.schemas';
 
 
 export const playlistsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        fetchPlaylists: build.query<PlaylistsResponse, FetchPlaylistsArgs>({
-            query: (params) => ({url: 'playlists', params}),
+        fetchPlaylists: build.query({
+            query: (params: FetchPlaylistsArgs) => ({url: 'playlists', params}),
             responseSchema: playlistsResponseSchema,
             catchSchemaFailure: err => {
                 errorToast('Zod error. Details in the console', err.issues)
                 return {status: 'CUSTOM_ERROR', error: 'Schema validation failed'}
             },
-            providesTags: ['Playlist'],
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.data.map(({ id }) => ({ type: 'Playlist' as const, id })),
+                        { type: 'Playlist', id: 'LIST' },
+                    ]
+                    : [{ type: 'Playlist', id: 'LIST' }],
         }),
-        createPlaylist: build.mutation<{
-            data: PlaylistData
-        }, CreatePlaylistArgs>({
-            query: (body) => ({method: 'post', url: 'playlists', body}),
-            invalidatesTags: ['Playlist'],
+        createPlaylist: build.mutation({
+            query: (body: PlaylistData) => ({method: 'post', url: 'playlists', body}),
+            responseSchema: playlistCreateResponceScheme,
+            catchSchemaFailure: err => {
+                errorToast('Zod error. Details in the console', err.issues)
+                return {status: 'CUSTOM_ERROR', error: 'Schema validation failed'}
+            },
+            invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
         }),
         deletePlaylist: build.mutation<void, string>({
             query: (playlistId) => ({method: 'delete', url: `playlists/${playlistId}`}),
-            invalidatesTags: ['Playlist'],
+            invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
         }),
         updatePlaylist: build.mutation<void, {
             playlistId: string;
@@ -63,10 +70,10 @@ export const playlistsApi = baseApi.injectEndpoints({
 
                                 if (!playlist) return
 
-                                const {title, description} = body.data.attributes
+                                const attrs = body.data.attributes
 
-                                playlist.attributes.title = title
-                                playlist.attributes.description = description
+                                playlist.attributes.title = attrs.title
+                                playlist.attributes.description = attrs.description
                             }
                         )
                     )
@@ -79,7 +86,7 @@ export const playlistsApi = baseApi.injectEndpoints({
                 }
             },
 
-            invalidatesTags: ['Playlist'],
+            invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
         }),
         uploadPlaylistCover: build.mutation<Images, {
             playlistId: string;
@@ -90,13 +97,13 @@ export const playlistsApi = baseApi.injectEndpoints({
                 formData.append('file', file)
                 return {method: 'post', url: `playlists/${playlistId}/images/main`, body: formData}
             },
-            invalidatesTags: ['Playlist'],
+            invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
         }),
         deletePlaylistCover: build.mutation<void, {
             playlistId: string
         }>({
             query: ({playlistId}) => ({method: 'delete', url: `playlists/${playlistId}/images/main`}),
-            invalidatesTags: ['Playlist'],
+            invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
         }),
     }),
 })
