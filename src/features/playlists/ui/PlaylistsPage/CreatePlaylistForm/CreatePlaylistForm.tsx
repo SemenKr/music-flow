@@ -1,10 +1,20 @@
 import { useCreatePlaylistMutation } from '@/features/playlists/api/playlistsApi'
 import type { CreatePlaylistFormValues } from '@/features/playlists/api/playlistsApi.types'
+import { createPlaylistSchema } from '@/features/playlists/model/playlists.schemas'
 import { type SubmitHandler, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {toast} from 'react-toastify';
 import s from './CreatePlaylistForm.module.css'
 
 export const CreatePlaylistForm = () => {
-  const { register, handleSubmit, reset } = useForm<CreatePlaylistFormValues>()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreatePlaylistFormValues>({
+    resolver: zodResolver(createPlaylistSchema),
+  })
   const [createPlaylist, { isLoading }] = useCreatePlaylistMutation()
 
   const onSubmit: SubmitHandler<CreatePlaylistFormValues> = data => {
@@ -21,6 +31,7 @@ export const CreatePlaylistForm = () => {
       .catch(error => {
         console.error('Failed to create playlist:', error)
         // Можно показать toast с ошибкой
+          toast('Failed to create playlist:', error)
       })
   }
 
@@ -41,6 +52,7 @@ export const CreatePlaylistForm = () => {
           {...register('title')}
           placeholder="Midnight focus"
         />
+        {errors.title && <span className={s.error}>{errors.title.message}</span>}
       </div>
       <div className={s.field}>
         <label className={s.label} htmlFor="playlist-description">
@@ -52,6 +64,9 @@ export const CreatePlaylistForm = () => {
           {...register('description')}
           placeholder="Warm synths and slow beats."
         />
+        {errors.description && (
+          <span className={s.error}>{errors.description.message}</span>
+        )}
       </div>
       <button disabled={isLoading} className={s.submit} type="submit">
         Create playlist

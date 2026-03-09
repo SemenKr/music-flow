@@ -128,7 +128,10 @@
   transform: translateY(-1px);
   box-shadow: 0 18px 34px rgba(255, 183, 77, 0.3);
 }
-
+.error {
+  color: red;
+  font-weight: bold;
+}
 html[data-theme='light'] .formCard {
   --form-field: rgba(255, 255, 255, 0.75);
 }
