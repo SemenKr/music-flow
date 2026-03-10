@@ -10,12 +10,13 @@ export const TracksList = ({ tracks }: TracksListProps) => {
     <div className={s.list}>
       {tracks.map(track => {
         const { title, user, attachments } = track.attributes
+        const userName = user?.name ?? 'Unknown artist'
 
         return (
           <article key={track.id} className={s.item}>
             <div className={s.itemInfo}>
               <p className={s.itemTitle}>Title: {title}</p>
-              <p className={s.itemArtist}>Name: {user.name}</p>
+              <p className={s.itemArtist}>Name: {userName}</p>
             </div>
 
             {/* 🎵 Если есть аудио-файл — показываем плеер */}

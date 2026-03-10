@@ -1,7 +1,7 @@
 import { useGetMeQuery } from '@/features/auth/api/authApi'
 
 export const MainPage = () => {
-  const { data } = useGetMeQuery()
+  const { data } = useGetMeQuery(undefined)
 
   return (
     <div>

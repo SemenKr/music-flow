@@ -30,8 +30,7 @@ export const CreatePlaylistForm = () => {
       })
       .catch(error => {
         console.error('Failed to create playlist:', error)
-        // Можно показать toast с ошибкой
-          toast('Failed to create playlist:', error)
+        toast.error('Failed to create playlist')
       })
   }
 

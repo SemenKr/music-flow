@@ -19,7 +19,7 @@ const navItems = [
 
 export const Header = ({ showProgress }: Props) => {
   const { preference, resolvedTheme, toggleTheme } = useTheme()
-  const { data } = useGetMeQuery()
+  const { data } = useGetMeQuery(undefined)
   const [logout] = useLogoutMutation()
 
   const logoutHandler = () => logout()

@@ -6,7 +6,7 @@ import s from './TracksPage.module.css'
 
 export const TracksPage = () => {
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useFetchTracksInfiniteQuery()
+    useFetchTracksInfiniteQuery({})
 
   const { observerRef } = useInfiniteScroll({ hasNextPage, isFetching, fetchNextPage })
 

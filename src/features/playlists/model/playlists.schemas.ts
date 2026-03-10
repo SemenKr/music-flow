@@ -9,6 +9,13 @@ export const createPlaylistSchema = z.object({
     description: z.string().max(1000, 'The description length must be less than 1000 characters.'),
 })
 
+export const createPlaylistRequestSchema = z.object({
+    data: z.object({
+        type: z.literal('playlists'),
+        attributes: createPlaylistSchema,
+    }),
+})
+
 export const playlistMetaSchema = z.object({
     page: z.int().nonnegative(),
     pageSize: z.int().positive(),

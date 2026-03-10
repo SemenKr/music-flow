@@ -1,5 +1,6 @@
 import {
   createPlaylistSchema,
+  createPlaylistRequestSchema,
   playlistAttributesSchema,
   playlistDataSchema,
   type playlistMetaSchema, playlistsResponseSchema, updatePlaylistSchema
@@ -11,6 +12,7 @@ export type PlaylistAttributes = z.infer<typeof playlistAttributesSchema>
 export type PlaylistData = z.infer<typeof playlistDataSchema>
 export type PlaylistsResponse = z.infer<typeof playlistsResponseSchema>
 export type UpdatePlaylistArgs = z.infer<typeof updatePlaylistSchema>
+export type CreatePlaylistFormValues = z.infer<typeof createPlaylistSchema>
 
 // Arguments
 export type FetchPlaylistsArgs = {
@@ -24,4 +26,4 @@ export type FetchPlaylistsArgs = {
   trackId?: string
 }
 
-export type CreatePlaylistArgs = z.infer<typeof createPlaylistSchema>
+export type CreatePlaylistArgs = z.infer<typeof createPlaylistRequestSchema>
