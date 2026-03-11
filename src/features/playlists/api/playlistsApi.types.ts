@@ -27,3 +27,16 @@ export type FetchPlaylistsArgs = {
 }
 
 export type CreatePlaylistArgs = z.infer<typeof createPlaylistRequestSchema>
+// WebSocket Events
+export type PlaylistCreatedEvent = {
+  type: 'tracks.playlist-created'
+  payload: {
+    data: PlaylistData
+  }
+}
+export type PlaylistUpdatedEvent = {
+  type: 'tracks.playlist-updated'
+  payload: {
+    data: PlaylistData
+  }
+}

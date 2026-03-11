@@ -35,7 +35,6 @@ export const authApi = baseApi.injectEndpoints({
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         // Ждем успешного выполнения запроса
         const { data } = await queryFulfilled
-        console.log('login: ', data)
         // Сохраняем токены в localStorage для использования в будущих запросах
         localStorage.setItem(AUTH_KEYS.accessToken, data.accessToken)
         localStorage.setItem(AUTH_KEYS.refreshToken, data.refreshToken)

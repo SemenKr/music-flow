@@ -15,5 +15,5 @@ export const baseApi = createApi({
 
   // 🔐 Кастомный baseQuery с авто-обновлением accessToken
   baseQuery: baseQueryWithReauth,
-  skipSchemaValidation: import.meta.env.PROD,
+  // skipSchemaValidation: import.meta.env.PROD,
 })
