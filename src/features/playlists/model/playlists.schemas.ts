@@ -61,3 +61,11 @@ export const updatePlaylistSchema = z.object({
 export const playlistCreateResponseScheme = z.object({
   data: playlistDataSchema,
 })
+
+export const playlistImageProcessedEventSchema = z.object({
+  type: z.literal('tracks.playlist-image-processed'),
+  payload: z.object({
+    itemId: z.string(), // id плейлиста
+    images: imagesSchema, // используем общую схему изображений
+  }),
+})

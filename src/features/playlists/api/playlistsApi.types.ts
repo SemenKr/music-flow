@@ -1,3 +1,4 @@
+import {imagesSchema} from '@/common/schemas';
 import {
   createPlaylistSchema,
   createPlaylistRequestSchema,
@@ -15,6 +16,7 @@ export type PlaylistData = z.infer<typeof playlistDataSchema>
 export type PlaylistsResponse = z.infer<typeof playlistsResponseSchema>
 export type UpdatePlaylistArgs = z.infer<typeof updatePlaylistSchema>
 export type CreatePlaylistFormValues = z.infer<typeof createPlaylistSchema>
+export type PlaylistImageProcessedEvent = z.infer<typeof playlistImageProcessedEventSchema>
 
 // Arguments
 export type FetchPlaylistsArgs = {
@@ -42,3 +44,10 @@ export type PlaylistUpdatedEvent = {
     data: PlaylistData
   }
 }
+export const playlistImageProcessedEventSchema = z.object({
+  type: z.literal('tracks.playlist-image-processed'),
+  payload: z.object({
+    itemId: z.string(), // id плейлиста
+    images: imagesSchema, // используем общую схему изображений
+  }),
+})

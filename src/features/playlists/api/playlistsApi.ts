@@ -7,6 +7,7 @@ import type {
   CreatePlaylistArgs,
   FetchPlaylistsArgs,
   PlaylistCreatedEvent,
+  PlaylistImageProcessedEvent,
   PlaylistUpdatedEvent,
   UpdatePlaylistArgs,
 } from '@/features/playlists/api/playlistsApi.types.ts'
@@ -20,79 +21,122 @@ export const playlistsApi = baseApi.injectEndpoints({
     // Получение списка плейлистов
     fetchPlaylists: build.query({
       query: (params: FetchPlaylistsArgs) => ({ url: 'playlists', params }),
-      ...withZodCatch(playlistsResponseSchema), // валидация ответа через zod
-      keepUnusedDataFor: 0, // очищать кеш сразу после размонтирования
 
-      async onCacheEntryAdded(_arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
-        // ждём завершения первого запроса
+      // Проверка ответа сервера через Zod
+      ...withZodCatch(playlistsResponseSchema),
+
+      // Удаляем кеш сразу после размонтирования последнего подписчика
+      keepUnusedDataFor: 0,
+
+      async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+        // Ждём завершения первого HTTP запроса
         await cacheDataLoaded
 
-        // подписки на websocket события
+        // Подписываемся на websocket события
         const unsubscribes = [
-          // новый плейлист
+          // Событие: создан новый плейлист
           subscribeToEvent<PlaylistCreatedEvent>(SOCKET_EVENTS.PLAYLIST_CREATED, msg => {
             const newPlaylist = msg.payload.data
 
+            // Если есть фильтр userId (например страница профиля),
+            // добавляем только плейлисты этого пользователя
+            if (arg.userId && newPlaylist.attributes.user.id !== arg.userId) {
+              return
+            }
+
             updateCachedData(state => {
-              state.data.pop() // удаляем последний элемент (для пагинации)
-              state.data.unshift(newPlaylist) // добавляем новый в начало
-              state.meta.totalCount = state.meta.totalCount + 1
-              state.meta.pagesCount = Math.ceil(state.meta.totalCount / state.meta.pageSize)
+              state.data.pop() // удаляем последний элемент (ограничение пагинации)
+              state.data.unshift(newPlaylist) // добавляем новый плейлист в начало
+
+              // обновляем метаданные
+              state.meta.totalCount += 1
+              state.meta.pagesCount = Math.ceil(
+                  state.meta.totalCount / state.meta.pageSize
+              )
             })
           }),
 
-          // обновление плейлиста
+          // Событие: обработка изображения плейлиста завершена
+          subscribeToEvent<PlaylistImageProcessedEvent>(
+              SOCKET_EVENTS.PLAYLIST_IMAGE_PROCESSED,
+              msg => {
+                const { itemId, images } = msg.payload
+
+                updateCachedData(state => {
+                  // ищем плейлист в текущем кеше
+                  const playlist = state.data.find(p => p.id === itemId)
+                  if (!playlist) return
+
+                  // обновляем изображения
+                  playlist.attributes.images = images
+                })
+              }
+          ),
+
+          // Событие: плейлист обновлён
           subscribeToEvent<PlaylistUpdatedEvent>(SOCKET_EVENTS.PLAYLIST_UPDATED, msg => {
             const newPlaylist = msg.payload.data
 
             updateCachedData(state => {
-              const index = state.data.findIndex(playlist => playlist.id === newPlaylist.id)
+              const index = state.data.findIndex(p => p.id === newPlaylist.id)
 
               if (index !== -1) {
-                // обновляем данные плейлиста в кеше
+                // обновляем существующий плейлист
                 state.data[index] = { ...state.data[index], ...newPlaylist }
               }
             })
           }),
         ]
 
-        // ждём пока подписка на кеш исчезнет
+        // Ждём пока query удалится из кеша (нет подписчиков)
         await cacheEntryRemoved
 
-        // отписываемся от websocket
+        // Отписываемся от всех websocket событий
         unsubscribes.forEach(unsubscribe => unsubscribe())
       },
 
-      // теги для кеширования RTK Query
+      // Теги RTK Query для кеш-инвалидации
       providesTags: result =>
-        result
-          ? [
-              ...result.data.map(({ id }) => ({ type: 'Playlist' as const, id })),
-              { type: 'Playlist', id: 'LIST' },
-            ]
-          : [{ type: 'Playlist', id: 'LIST' }],
+          result
+              ? [
+                ...result.data.map(({ id }) => ({ type: 'Playlist' as const, id })),
+                { type: 'Playlist', id: 'LIST' },
+              ]
+              : [{ type: 'Playlist', id: 'LIST' }],
     }),
 
-    // создание плейлиста
+    // Создание плейлиста
     createPlaylist: build.mutation({
-      query: (body: CreatePlaylistArgs) => ({ method: 'post', url: 'playlists', body }),
-      ...withZodCatch(playlistCreateResponseScheme), // валидация ответа
-      invalidatesTags: [{ type: 'Playlist', id: 'LIST' }], // обновить список
-    }),
+      query: (body: CreatePlaylistArgs) => ({
+        method: 'post',
+        url: 'playlists',
+        body,
+      }),
 
-    // удаление плейлиста
-    deletePlaylist: build.mutation<void, string>({
-      query: playlistId => ({ method: 'delete', url: `playlists/${playlistId}` }),
+      // Проверка ответа
+      ...withZodCatch(playlistCreateResponseScheme),
+
+      // Инвалидируем список плейлистов
       invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
     }),
 
-    // обновление плейлиста
+    // Удаление плейлиста
+    deletePlaylist: build.mutation<void, string>({
+      query: playlistId => ({
+        method: 'delete',
+        url: `playlists/${playlistId}`,
+      }),
+
+      invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
+    }),
+
+    // Обновление плейлиста
     updatePlaylist: build.mutation<
-      void,
-      {
-        playlistId: string
-        body: UpdatePlaylistArgs
-      }
+        void,
+        {
+          playlistId: string
+          body: UpdatePlaylistArgs
+        }
     >({
       query: ({ playlistId, body }) => ({
         url: `playlists/${playlistId}`,
@@ -100,31 +144,30 @@ export const playlistsApi = baseApi.injectEndpoints({
         body,
       }),
 
-      // optimistic update
+      // Optimistic update — обновляем UI до ответа сервера
       onQueryStarted: async ({ playlistId, body }, { queryFulfilled, dispatch, getState }) => {
-        // получаем все аргументы кешированных запросов fetchPlaylists
+        // Получаем аргументы всех кешированных fetchPlaylists
         const args = playlistsApi.util.selectCachedArgsForQuery(getState(), 'fetchPlaylists')
 
-        // обновляем кеш сразу
+        // Применяем изменения во всех кешах
         const patches = args.map(arg =>
-          dispatch(
-            playlistsApi.util.updateQueryData('fetchPlaylists', arg, draft => {
-              const playlist = draft.data.find(p => p.id === playlistId)
+            dispatch(
+                playlistsApi.util.updateQueryData('fetchPlaylists', arg, draft => {
+                  const playlist = draft.data.find(p => p.id === playlistId)
+                  if (!playlist) return
 
-              if (!playlist) return
+                  const attrs = body.data.attributes
 
-              const attrs = body.data.attributes
-
-              playlist.attributes.title = attrs.title
-              playlist.attributes.description = attrs.description
-            }),
-          ),
+                  playlist.attributes.title = attrs.title
+                  playlist.attributes.description = attrs.description
+                })
+            )
         )
 
         try {
           await queryFulfilled // ждём ответ сервера
         } catch {
-          // откат если ошибка
+          // если запрос упал — откатываем optimistic update
           patches.forEach(patch => patch.undo())
         }
       },
@@ -132,25 +175,30 @@ export const playlistsApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
     }),
 
-    // загрузка обложки плейлиста
+    // Загрузка обложки плейлиста
     uploadPlaylistCover: build.mutation({
       query: ({ playlistId, file }) => {
         const formData = new FormData()
         formData.append('file', file)
 
-        return { method: 'post', url: `playlists/${playlistId}/images/main`, body: formData }
+        return {
+          method: 'post',
+          url: `playlists/${playlistId}/images/main`,
+          body: formData,
+        }
       },
 
       ...withZodCatch(imagesSchema),
+
       invalidatesTags: [{ type: 'Playlist', id: 'LIST' }],
     }),
 
-    // удаление обложки
+    // Удаление обложки
     deletePlaylistCover: build.mutation<
-      void,
-      {
-        playlistId: string
-      }
+        void,
+        {
+          playlistId: string
+        }
     >({
       query: ({ playlistId }) => ({
         method: 'delete',
