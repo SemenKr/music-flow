@@ -1,4 +1,4 @@
-import {imagesSchema} from '@/common/schemas';
+import { imagesSchema } from '@/common/schemas'
 import {
   createPlaylistSchema,
   createPlaylistRequestSchema,

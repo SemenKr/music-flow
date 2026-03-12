@@ -50,27 +50,25 @@ export const playlistsApi = baseApi.injectEndpoints({
 
               // обновляем метаданные
               state.meta.totalCount += 1
-              state.meta.pagesCount = Math.ceil(
-                  state.meta.totalCount / state.meta.pageSize
-              )
+              state.meta.pagesCount = Math.ceil(state.meta.totalCount / state.meta.pageSize)
             })
           }),
 
           // Событие: обработка изображения плейлиста завершена
           subscribeToEvent<PlaylistImageProcessedEvent>(
-              SOCKET_EVENTS.PLAYLIST_IMAGE_PROCESSED,
-              msg => {
-                const { itemId, images } = msg.payload
+            SOCKET_EVENTS.PLAYLIST_IMAGE_PROCESSED,
+            msg => {
+              const { itemId, images } = msg.payload
 
-                updateCachedData(state => {
-                  // ищем плейлист в текущем кеше
-                  const playlist = state.data.find(p => p.id === itemId)
-                  if (!playlist) return
+              updateCachedData(state => {
+                // ищем плейлист в текущем кеше
+                const playlist = state.data.find(p => p.id === itemId)
+                if (!playlist) return
 
-                  // обновляем изображения
-                  playlist.attributes.images = images
-                })
-              }
+                // обновляем изображения
+                playlist.attributes.images = images
+              })
+            },
           ),
 
           // Событие: плейлист обновлён
@@ -97,12 +95,12 @@ export const playlistsApi = baseApi.injectEndpoints({
 
       // Теги RTK Query для кеш-инвалидации
       providesTags: result =>
-          result
-              ? [
-                ...result.data.map(({ id }) => ({ type: 'Playlist' as const, id })),
-                { type: 'Playlist', id: 'LIST' },
-              ]
-              : [{ type: 'Playlist', id: 'LIST' }],
+        result
+          ? [
+              ...result.data.map(({ id }) => ({ type: 'Playlist' as const, id })),
+              { type: 'Playlist', id: 'LIST' },
+            ]
+          : [{ type: 'Playlist', id: 'LIST' }],
     }),
 
     // Создание плейлиста
@@ -132,11 +130,11 @@ export const playlistsApi = baseApi.injectEndpoints({
 
     // Обновление плейлиста
     updatePlaylist: build.mutation<
-        void,
-        {
-          playlistId: string
-          body: UpdatePlaylistArgs
-        }
+      void,
+      {
+        playlistId: string
+        body: UpdatePlaylistArgs
+      }
     >({
       query: ({ playlistId, body }) => ({
         url: `playlists/${playlistId}`,
@@ -151,17 +149,17 @@ export const playlistsApi = baseApi.injectEndpoints({
 
         // Применяем изменения во всех кешах
         const patches = args.map(arg =>
-            dispatch(
-                playlistsApi.util.updateQueryData('fetchPlaylists', arg, draft => {
-                  const playlist = draft.data.find(p => p.id === playlistId)
-                  if (!playlist) return
+          dispatch(
+            playlistsApi.util.updateQueryData('fetchPlaylists', arg, draft => {
+              const playlist = draft.data.find(p => p.id === playlistId)
+              if (!playlist) return
 
-                  const attrs = body.data.attributes
+              const attrs = body.data.attributes
 
-                  playlist.attributes.title = attrs.title
-                  playlist.attributes.description = attrs.description
-                })
-            )
+              playlist.attributes.title = attrs.title
+              playlist.attributes.description = attrs.description
+            }),
+          ),
         )
 
         try {
@@ -195,10 +193,10 @@ export const playlistsApi = baseApi.injectEndpoints({
 
     // Удаление обложки
     deletePlaylistCover: build.mutation<
-        void,
-        {
-          playlistId: string
-        }
+      void,
+      {
+        playlistId: string
+      }
     >({
       query: ({ playlistId }) => ({
         method: 'delete',
