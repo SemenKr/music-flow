@@ -1,6 +1,6 @@
-import type {PlaylistData} from '@/features/playlists/api/playlistsApi.types'
-import {useState} from 'react'
-import {PlaylistItem} from '../PlaylistItem/PlaylistItem'
+import type { PlaylistData } from '@/features/playlists/api/playlistsApi.types'
+import { useState } from 'react'
+import { PlaylistItem } from '../PlaylistItem/PlaylistItem'
 import s from './PlaylistsList.module.css'
 
 type Props = {

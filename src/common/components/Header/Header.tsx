@@ -4,7 +4,7 @@ import { Path } from '@/common/routing'
 import { useGetMeQuery, useLogoutMutation } from '@/features/auth/api/authApi'
 import { AuthActionButton } from '@/features/auth/ui/AuthActionButton/AuthActionButton'
 import { Login } from '@/features/auth/ui/Login/Login'
-import {Link, NavLink} from 'react-router'
+import { Link, NavLink } from 'react-router'
 import s from './Header.module.css'
 
 type Props = {
@@ -41,11 +41,11 @@ export const Header = ({ showProgress }: Props) => {
             ))}
           </ul>
           <div className={s.actions}>
-            {data && data.login &&
-                <Link to={Path.Profile}>
-                  <span className={s.userName}>{data.login}</span>
-                </Link>
-                }
+            {data && data.login && (
+              <Link to={Path.Profile}>
+                <span className={s.userName}>{data.login}</span>
+              </Link>
+            )}
             {data && (
               <AuthActionButton
                 label="logout"

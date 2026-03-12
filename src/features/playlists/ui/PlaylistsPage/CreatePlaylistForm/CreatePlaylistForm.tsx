@@ -3,7 +3,7 @@ import type { CreatePlaylistFormValues } from '@/features/playlists/api/playlist
 import { createPlaylistSchema } from '@/features/playlists/model/playlists.schemas'
 import { type SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify'
 import s from './CreatePlaylistForm.module.css'
 
 export const CreatePlaylistForm = () => {

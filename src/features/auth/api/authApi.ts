@@ -1,8 +1,8 @@
-import {baseApi} from '@/app/api/baseApi'
-import {AUTH_KEYS} from '@/common/constants'
-import {withZodCatch} from '@/common/utils';
-import type {LoginArgs} from '@/features/auth/api/authApi.types'
-import {loginResponseSchema, meResponseSchema} from '@/features/auth/model/auth.schemas';
+import { baseApi } from '@/app/api/baseApi'
+import { AUTH_KEYS } from '@/common/constants'
+import { withZodCatch } from '@/common/utils'
+import type { LoginArgs } from '@/features/auth/api/authApi.types'
+import { loginResponseSchema, meResponseSchema } from '@/features/auth/model/auth.schemas'
 
 // Расширяем базовый API (baseApi) новыми эндпоинтами для аутентификации.
 // Это позволяет разбивать логику API на несколько файлов (Code Splitting),
@@ -21,7 +21,7 @@ export const authApi = baseApi.injectEndpoints({
 
     // Эндпоинт для входа в систему (POST /auth/login)
     login: build.mutation({
-      query:  (payload: LoginArgs) => {
+      query: (payload: LoginArgs) => {
         return {
           method: 'post',
           url: 'auth/login',

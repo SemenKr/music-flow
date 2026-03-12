@@ -1,9 +1,13 @@
 import {
   type fetchTracksResponseSchema,
-  trackAttachmentSchema, trackAttributesSchema, trackDataSchema, trackRelationshipsSchema, tracksIncludedSchema,
-  tracksMetaSchema
-} from '@/features/tracks/model/tracks.schemas';
-import z from 'zod';
+  trackAttachmentSchema,
+  trackAttributesSchema,
+  trackDataSchema,
+  trackRelationshipsSchema,
+  tracksIncludedSchema,
+  tracksMetaSchema,
+} from '@/features/tracks/model/tracks.schemas'
+import z from 'zod'
 
 export type TrackAttachment = z.infer<typeof trackAttachmentSchema>
 export type TrackRelationships = z.infer<typeof trackRelationshipsSchema>
