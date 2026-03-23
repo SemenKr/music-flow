@@ -20,18 +20,14 @@ export const baseQueryWithReauth: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions)
   // ❗ Если получили 401 (токен истёк или невалидный)
   if (result.error && result.error.status === 401) {
-    const refreshToken = localStorage.getItem(AUTH_KEYS.refreshToken)
-
-    if (!refreshToken) {
-      localStorage.removeItem(AUTH_KEYS.accessToken)
-      return result
-    }
-
     // 🧠 Если никто ещё не обновляет токен — берём управление
     if (!mutex.isLocked()) {
       const release = await mutex.acquire() // 🔒 Блокируем мьютекс
 
       try {
+        // 📦 Берём refreshToken из localStorage
+        const refreshToken = localStorage.getItem(AUTH_KEYS.refreshToken)
+
         // 🔄 Отправляем запрос на обновление токена
         const refreshResult = await baseQuery(
           { url: '/auth/refresh', method: 'post', body: { refreshToken } },

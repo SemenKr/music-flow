@@ -1,8 +1,7 @@
 import { useGetMeQuery } from '@/features/auth/api/authApi'
-import { hasStoredAuth } from '@/features/auth/lib/hasStoredAuth'
 
 export const MainPage = () => {
-  const { data } = useGetMeQuery(undefined, { skip: !hasStoredAuth() })
+  const { data } = useGetMeQuery(undefined)
 
   return (
     <div>

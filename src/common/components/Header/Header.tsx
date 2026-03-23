@@ -2,7 +2,6 @@ import { LinearProgress } from '@/common/components'
 import { useTheme } from '@/common/hooks/useTheme'
 import { Path } from '@/common/routing'
 import { useGetMeQuery, useLogoutMutation } from '@/features/auth/api/authApi'
-import { hasStoredAuth } from '@/features/auth/lib/hasStoredAuth'
 import { AuthActionButton } from '@/features/auth/ui/AuthActionButton/AuthActionButton'
 import { Login } from '@/features/auth/ui/Login/Login'
 import { Link, NavLink } from 'react-router'
@@ -20,7 +19,7 @@ const navItems = [
 
 export const Header = ({ showProgress }: Props) => {
   const { preference, resolvedTheme, toggleTheme } = useTheme()
-  const { data } = useGetMeQuery(undefined, { skip: !hasStoredAuth() })
+  const { data } = useGetMeQuery(undefined)
   const [logout] = useLogoutMutation()
 
   const logoutHandler = () => logout()
