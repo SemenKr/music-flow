@@ -1,10 +1,8 @@
 import { AUTH_KEYS } from '@/common/constants'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-const withTrailingSlash = (url: string) => (url.endsWith('/') ? url : `${url}/`)
-
 export const baseQuery = fetchBaseQuery({
-  baseUrl: withTrailingSlash(import.meta.env.VITE_BASE_URL),
+  baseUrl: import.meta.env.VITE_BASE_URL,
   headers: {
     'API-KEY': import.meta.env.VITE_API_KEY,
   },

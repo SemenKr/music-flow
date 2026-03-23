@@ -15,7 +15,8 @@ export const OAuthCallback = () => {
     // отправляем сообщение в родительское окно
     if (code && window.opener) {
       // Передаем code через postMessage
-      window.opener.postMessage({ code }, window.location.origin)
+      // В production рекомендуется указывать конкретный origin вместо '*'
+      window.opener.postMessage({ code }, '*')
     }
 
     // Закрываем popup после отправки сообщения
