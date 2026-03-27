@@ -1,4 +1,4 @@
-import { useGetMeQuery } from '@/features/auth/api/authApi'
+import { useGetMeQuery } from '@/features/auth'
 
 export const MainPage = () => {
   const { data } = useGetMeQuery(undefined)

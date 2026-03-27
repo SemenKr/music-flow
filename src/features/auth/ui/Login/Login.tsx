@@ -1,4 +1,4 @@
-import { Path } from '@/common/routing'
+import { Path } from '@/app/router'
 import { useLoginMutation } from '@/features/auth/api/authApi'
 import { AuthActionButton } from '@/features/auth/ui/AuthActionButton/AuthActionButton'
 

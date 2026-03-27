@@ -1,4 +1,4 @@
-import { errorToast } from '@/common/utils/errorToast.ts'
+import { errorToast } from '@/common/utils/errorToast'
 import { type FetchBaseQueryError, NamedSchemaError } from '@reduxjs/toolkit/query/react'
 import type { ZodType } from 'zod'
 

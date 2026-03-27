@@ -1,4 +1,4 @@
-import type { RootState } from '@/app/model/store.ts'
+import type { RootState } from '@/app/model/store'
 import { playlistsApi } from '@/features/playlists/api/playlistsApi'
 import { tracksApi } from '@/features/tracks/api/tracksApi'
 import { useSelector } from 'react-redux'

@@ -1,5 +1,5 @@
 import type { SocketEvents } from '@/common/constants'
-import { getSocket } from './getSocket.ts'
+import { getSocket } from './getSocket'
 import type { Socket } from 'socket.io-client'
 
 // Тип callback функции, которая будет вызываться при получении события

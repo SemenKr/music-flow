@@ -1,6 +1,6 @@
 import { Header } from '@/common/components'
 import { useGlobalLoading } from '@/common/hooks'
-import { Routing } from '@/common/routing'
+import { AppRouter } from '@/app/router'
 import { ToastContainer } from 'react-toastify'
 import s from './App.module.css'
 
@@ -11,7 +11,7 @@ function App() {
     <>
       <Header showProgress={isGlobalLoading} />
       <main className={s.layout}>
-        <Routing />
+        <AppRouter />
       </main>
       <ToastContainer />
     </>

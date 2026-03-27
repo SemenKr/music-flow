@@ -1,7 +1,7 @@
 import { baseApi } from '@/app/api/baseApi'
-import { AUTH_KEYS } from '@/common/constants'
 import { withZodCatch } from '@/common/utils'
 import type { LoginArgs } from '@/features/auth/api/authApi.types'
+import { clearTokens, getRefreshToken, setTokens } from '@/features/auth/lib/tokenStorage'
 import { loginResponseSchema, meResponseSchema } from '@/features/auth/model/auth.schemas'
 
 // Расширяем базовый API (baseApi) новыми эндпоинтами для аутентификации.
@@ -35,9 +35,7 @@ export const authApi = baseApi.injectEndpoints({
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         // Ждем успешного выполнения запроса
         const { data } = await queryFulfilled
-        // Сохраняем токены в localStorage для использования в будущих запросах
-        localStorage.setItem(AUTH_KEYS.accessToken, data.accessToken)
-        localStorage.setItem(AUTH_KEYS.refreshToken, data.refreshToken)
+        setTokens(data)
 
         // Инвалидируем тег 'Auth', чтобы заставить RTK Query автоматически
         // перезапросить данные пользователя (endpoint getMe), так как мы только что вошли.
@@ -49,7 +47,7 @@ export const authApi = baseApi.injectEndpoints({
     logout: build.mutation<void, void>({
       query: () => {
         // Получаем refresh token из localStorage, чтобы отправить его на сервер для отзыва
-        const refreshToken = localStorage.getItem(AUTH_KEYS.refreshToken)
+        const refreshToken = getRefreshToken()
         return {
           url: 'auth/logout',
           method: 'post',
@@ -60,9 +58,7 @@ export const authApi = baseApi.injectEndpoints({
         // Ждем ответа от сервера (что токен успешно отозван)
         await queryFulfilled
 
-        // Удаляем токены из локального хранилища
-        localStorage.removeItem(AUTH_KEYS.accessToken)
-        localStorage.removeItem(AUTH_KEYS.refreshToken)
+        clearTokens()
 
         // Сбрасываем все состояние API (очищаем кэш).
         // Это важно, чтобы данные предыдущего пользователя не остались в памяти.

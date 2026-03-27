@@ -1,4 +1,4 @@
-import { Path } from '@/common/routing'
+import { Path } from '@/app/router'
 import { useGetMeQuery } from '@/features/auth/api/authApi'
 import { useFetchPlaylistsQuery } from '@/features/playlists/api/playlistsApi'
 import { CreatePlaylistForm } from '@/features/playlists/ui/PlaylistsPage/CreatePlaylistForm/CreatePlaylistForm'

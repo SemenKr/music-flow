@@ -1,4 +1,4 @@
-import { AUTH_KEYS } from '@/common/constants'
+import { getAccessToken } from '@/features/auth/lib/tokenStorage'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const baseQuery = fetchBaseQuery({
@@ -7,7 +7,7 @@ export const baseQuery = fetchBaseQuery({
     'API-KEY': import.meta.env.VITE_API_KEY,
   },
   prepareHeaders: headers => {
-    const accessToken = localStorage.getItem(AUTH_KEYS.accessToken)
+    const accessToken = getAccessToken()
     if (accessToken) {
       headers.set('Authorization', `Bearer ${accessToken}`)
     }

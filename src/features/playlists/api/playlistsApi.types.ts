@@ -1,13 +1,17 @@
-import { imagesSchema } from '@/common/schemas'
 import {
   createPlaylistSchema,
   createPlaylistRequestSchema,
   playlistAttributesSchema,
   playlistDataSchema,
-  type playlistMetaSchema,
+  playlistMetaSchema,
   playlistsResponseSchema,
   updatePlaylistSchema,
 } from '@/features/playlists/model/playlists.schemas'
+import {
+  playlistCreatedEventSchema,
+  playlistImageProcessedEventSchema,
+  playlistUpdatedEventSchema,
+} from '@/features/playlists/model/playlists.events'
 import z from 'zod'
 
 export type PlaylistMeta = z.infer<typeof playlistMetaSchema>
@@ -16,7 +20,9 @@ export type PlaylistData = z.infer<typeof playlistDataSchema>
 export type PlaylistsResponse = z.infer<typeof playlistsResponseSchema>
 export type UpdatePlaylistArgs = z.infer<typeof updatePlaylistSchema>
 export type CreatePlaylistFormValues = z.infer<typeof createPlaylistSchema>
+export type PlaylistCreatedEvent = z.infer<typeof playlistCreatedEventSchema>
 export type PlaylistImageProcessedEvent = z.infer<typeof playlistImageProcessedEventSchema>
+export type PlaylistUpdatedEvent = z.infer<typeof playlistUpdatedEventSchema>
 
 // Arguments
 export type FetchPlaylistsArgs = {
@@ -31,23 +37,3 @@ export type FetchPlaylistsArgs = {
 }
 
 export type CreatePlaylistArgs = z.infer<typeof createPlaylistRequestSchema>
-// WebSocket Events
-export type PlaylistCreatedEvent = {
-  type: 'tracks.playlist-created'
-  payload: {
-    data: PlaylistData
-  }
-}
-export type PlaylistUpdatedEvent = {
-  type: 'tracks.playlist-updated'
-  payload: {
-    data: PlaylistData
-  }
-}
-export const playlistImageProcessedEventSchema = z.object({
-  type: z.literal('tracks.playlist-image-processed'),
-  payload: z.object({
-    itemId: z.string(), // id плейлиста
-    images: imagesSchema, // используем общую схему изображений
-  }),
-})

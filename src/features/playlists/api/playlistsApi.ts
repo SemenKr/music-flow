@@ -1,4 +1,4 @@
-import { baseApi } from '@/app/api/baseApi.ts'
+import { baseApi } from '@/app/api/baseApi'
 import { SOCKET_EVENTS } from '@/common/constants'
 import { imagesSchema } from '@/common/schemas'
 import { subscribeToEvent } from '@/common/socket/subscribeToEvent'
@@ -10,7 +10,7 @@ import type {
   PlaylistImageProcessedEvent,
   PlaylistUpdatedEvent,
   UpdatePlaylistArgs,
-} from '@/features/playlists/api/playlistsApi.types.ts'
+} from '@/features/playlists/api/playlistsApi.types'
 import {
   playlistCreateResponseScheme,
   playlistsResponseSchema,

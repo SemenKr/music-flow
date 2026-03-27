@@ -1,9 +1,7 @@
 import { LinearProgress } from '@/common/components'
 import { useTheme } from '@/common/hooks/useTheme'
-import { Path } from '@/common/routing'
-import { useGetMeQuery, useLogoutMutation } from '@/features/auth/api/authApi'
-import { AuthActionButton } from '@/features/auth/ui/AuthActionButton/AuthActionButton'
-import { Login } from '@/features/auth/ui/Login/Login'
+import { Path } from '@/app/router'
+import { AuthActionButton, Login, useGetMeQuery, useLogoutMutation } from '@/features/auth'
 import { Link, NavLink } from 'react-router'
 import s from './Header.module.css'
 

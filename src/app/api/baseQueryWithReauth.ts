@@ -1,7 +1,7 @@
-import { baseApi } from '@/app/api/baseApi.ts'
+import { baseApi } from '@/app/api/baseApi'
 import { baseQuery } from '@/app/api/baseQuery'
-import { AUTH_KEYS } from '@/common/constants'
 import { handleErrors, isTokens } from '@/common/utils'
+import { clearTokens, getRefreshToken, setTokens } from '@/features/auth/lib/tokenStorage'
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { Mutex } from 'async-mutex'
 
@@ -20,7 +20,7 @@ export const baseQueryWithReauth: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions)
   // ❗ Если получили 401 (токен истёк или невалидный)
   if (result.error && result.error.status === 401) {
-    const refreshToken = localStorage.getItem(AUTH_KEYS.refreshToken)
+    const refreshToken = getRefreshToken()
 
     if (!refreshToken) {
       return result
@@ -40,13 +40,12 @@ export const baseQueryWithReauth: BaseQueryFn<
 
         // ✅ Если сервер вернул новые токены
         if (refreshResult.data && isTokens(refreshResult.data)) {
-          // 💾 Сохраняем новые токены
-          localStorage.setItem(AUTH_KEYS.accessToken, refreshResult.data.accessToken)
-          localStorage.setItem(AUTH_KEYS.refreshToken, refreshResult.data.refreshToken)
+          setTokens(refreshResult.data)
 
           // 🔁 Повторяем исходный запрос уже с новым accessToken
           result = await baseQuery(args, api, extraOptions)
         } else {
+          clearTokens()
           // 🚪 Если refresh не сработал — разлогиниваем пользователя
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error

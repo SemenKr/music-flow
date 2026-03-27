@@ -1,4 +1,4 @@
-import { baseQueryWithReauth } from '@/app/api/baseQueryWithReauth.ts'
+import { baseQueryWithReauth } from '@/app/api/baseQueryWithReauth'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 // 🌐 Базовый API-инстанс RTK Query
