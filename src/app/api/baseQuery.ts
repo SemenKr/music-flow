@@ -1,8 +1,9 @@
 import { AUTH_KEYS } from '@/common/constants'
+import { getApiBaseUrl } from '@/common/utils'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_BASE_URL,
+  baseUrl: getApiBaseUrl(),
   headers: {
     'API-KEY': import.meta.env.VITE_API_KEY,
   },

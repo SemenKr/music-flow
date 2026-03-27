@@ -3,6 +3,7 @@
 // и закрыть popup.
 
 import { useEffect } from 'react'
+import { getAppOrigin } from '@/common/utils'
 
 export const OAuthCallback = () => {
   useEffect(() => {
@@ -10,13 +11,13 @@ export const OAuthCallback = () => {
     const url = new URL(window.location.href)
     // Извлекаем параметр "code" из query-строки (?code=...)
     const code = url.searchParams.get('code')
+    const appOrigin = getAppOrigin()
 
     // Если код существует и страница была открыта из другого окна (popup),
     // отправляем сообщение в родительское окно
     if (code && window.opener) {
       // Передаем code через postMessage
-      // В production рекомендуется указывать конкретный origin вместо '*'
-      window.opener.postMessage({ code }, '*')
+      window.opener.postMessage({ code }, appOrigin)
     }
 
     // Закрываем popup после отправки сообщения

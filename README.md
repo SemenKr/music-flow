@@ -73,3 +73,26 @@ export default defineConfig([
 ```
 
 # music-flow
+
+## Deploy to Vercel
+
+This project is a Vite SPA. For Vercel deployment:
+
+1. Import the repository into Vercel.
+2. Keep the default framework preset for Vite.
+3. Set these environment variables in Vercel:
+   - `VITE_BASE_URL=/api/proxy/`
+   - `VITE_SOCKET_URL=https://musicfun.it-incubator.app`
+   - `VITE_API_KEY=...`
+4. Deploy the project.
+
+`vercel.json` contains:
+
+- an external rewrite from `/api/proxy/:path*` to `https://musicfun.it-incubator.app/api/1.0/:path*`
+- an SPA rewrite so routes like `/playlists`, `/tracks`, and `/oauth/callback` resolve to `index.html`
+
+This lets the browser call your Vercel domain instead of the backend directly, which avoids browser-side CORS restrictions when the backend whitelist cannot be changed.
+
+OAuth callback URL is resolved from `window.location.origin`, so the same build works on localhost and Vercel.
+
+Limitation: this solves HTTP API requests. If the backend also restricts WebSocket origins, realtime playlist updates may still not work on Vercel without backend changes.
