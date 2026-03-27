@@ -1,5 +1,4 @@
 import { Path } from '@/common/routing'
-import { getApiBaseUrl, getAppOrigin } from '@/common/utils'
 import { useLoginMutation } from '@/features/auth/api/authApi'
 import { AuthActionButton } from '@/features/auth/ui/AuthActionButton/AuthActionButton'
 
@@ -8,17 +7,14 @@ export const Login = () => {
   const [login] = useLoginMutation()
 
   const loginHandler = () => {
-    const appOrigin = getAppOrigin()
-    const apiBaseUrl = getApiBaseUrl()
-
     // Формируем redirectUri — адрес, на который OAuth-сервер
     // перенаправит пользователя после успешной авторизации
-    const redirectUri = `${appOrigin}${Path.OAuthRedirect}`
+    const redirectUri = import.meta.env.VITE_DOMAIN_ADDRESS + Path.OAuthRedirect
 
     // Формируем URL для старта OAuth-процесса на backend.
     // Передаем callbackUrl, чтобы сервер знал,
     // куда вернуть пользователя после авторизации.
-    const url = `${apiBaseUrl}auth/oauth-redirect?callbackUrl=${redirectUri}`
+    const url = `${import.meta.env.VITE_BASE_URL}auth/oauth-redirect?callbackUrl=${redirectUri}`
 
     // Открываем popup-окно с OAuth-страницей
     // Размеры заданы явно для удобства пользователя
@@ -29,7 +25,7 @@ export const Login = () => {
     const receiveMessage = async (event: MessageEvent) => {
       // Проверяем источник сообщения (безопасность)
       // Игнорируем сообщения не с нашего домена
-      if (event.origin !== appOrigin) return
+      if (event.origin !== import.meta.env.VITE_DOMAIN_ADDRESS) return
 
       const { code } = event.data
 

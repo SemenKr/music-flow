@@ -1,8 +1,12 @@
+import { useGetMeQuery } from '@/features/auth/api/authApi'
+
 export const MainPage = () => {
+  const { data } = useGetMeQuery(undefined)
+
   return (
     <div>
       <h1>Main page</h1>
-      <div>Discover playlists and tracks.</div>
+      <div>login: {data?.login} </div>
     </div>
   )
 }
